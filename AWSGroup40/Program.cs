@@ -1,4 +1,16 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using AWSGymWebsite.Data;
+using AWSGymWebsite.Areas.Identity.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("AWSGymWebsiteContextConnection") ?? throw new InvalidOperationException("Connection string 'AWSGymWebsiteContextConnection' not found.");
+
+builder.Services.AddDbContext<AWSGymWebsiteContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<AWSGymWebsiteUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<AWSGymWebsiteContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,10 +30,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+
+app.UseAuthentication();// Check customer permission
+app.UseAuthorization();// Direct Login page
+
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapRazorPages();
 app.Run();
