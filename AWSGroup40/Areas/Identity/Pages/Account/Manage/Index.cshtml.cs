@@ -16,12 +16,12 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<Viewer> _userManager;
-        private readonly SignInManager<Viewer> _signInManager;
+        private readonly UserManager<AWSGymWebsiteUser> _userManager;
+        private readonly SignInManager<AWSGymWebsiteUser> _signInManager;
 
         public IndexModel(
-            UserManager<Viewer> userManager,
-        SignInManager<Viewer> signInManager)
+            UserManager<AWSGymWebsiteUser> userManager,
+        SignInManager<AWSGymWebsiteUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -33,7 +33,10 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public string Username { get; set; }
 
-        public string role { get; set; }
+        public string fname { get; set; }
+        public string lname { get; set; }
+        public string gender { get; set; }
+        public string contact { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -63,17 +66,23 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             public string PhoneNumber { get; set; }
         }
 
-        private async Task LoadAsync(Viewer user)
+        private async Task LoadAsync(AWSGymWebsiteUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            var urole = await _userManager.GetUserIdAsync(user);
-            Username = userName;
-            role = urole;
+            //Get user detail
+            user = await _userManager.GetUserAsync(User);
+            //Retrive detail
+            var ufname = user.Userfname;
+            var ulname = user.Userlname;
+            var ugender = user.Gender;
+            var ucontact = user.ContactNumber;
+
+            fname = ufname;
+            lname = ulname;
+            gender = ugender;
+            contact = ucontact;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
             };
         }
 
