@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,9 @@ public class AWSGymWebsiteUser : IdentityUser
     public string ContactNumber { get; set; }
     public string Gender { get; set; }
     public DateTime UserDob { get; set; }
+
+    [DataType(DataType.Date)]
+    public DateTime RegDate { get; set; }
 
     public string role { get; set; }
 

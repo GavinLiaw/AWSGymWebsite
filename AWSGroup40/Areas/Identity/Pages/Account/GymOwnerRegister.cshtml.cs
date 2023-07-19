@@ -31,20 +31,24 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<AWSGymWebsiteUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> roleManager;
+
 
         public GymOwnerRegisterModel(
             UserManager<AWSGymWebsiteUser> userManager,
             IUserStore<AWSGymWebsiteUser> userStore,
             SignInManager<AWSGymWebsiteUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
+            _emailStore = (IUserEmailStore<AWSGymWebsiteUser>)GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            this.roleManager = roleManager;
         }
 
         /// <summary>
@@ -80,6 +84,15 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+
+            [Required]
+            [Display(Name = "First Name")]
+            public string Userfname { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string Userlname { get; set; }
 
             [Required]
             [Display(Name = "Bsuiness SSM Number")]
@@ -121,6 +134,8 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
                 var user = new GymOwner
                 {
                     Email = Input.Email,
+                    Userfname = Input.Userfname,
+                    Userlname = Input.Userlname,
                     ContactNumber = "None",
                     Gender = "None",
                     role = "GymOwner"
@@ -132,9 +147,19 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    //Add User Role
-                    await _userManager.AddToRoleAsync(user, "Viewer");
-                    
+                    bool roleresult = await roleManager.RoleExistsAsync("Viewer");
+                    if (!roleresult)
+                    {
+                        await roleManager.CreateAsync(new IdentityRole("Viewer"));
+                    }
+                    roleresult = await roleManager.RoleExistsAsync("GymOwner");
+                    if (!roleresult)
+                    {
+                        await roleManager.CreateAsync(new IdentityRole("GymOwner"));
+                    }
+                    //Register user as viewer
+                    await _userManager.AddToRoleAsync(user, "GymOwner");
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
