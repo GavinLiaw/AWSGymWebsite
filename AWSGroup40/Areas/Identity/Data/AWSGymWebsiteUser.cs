@@ -9,5 +9,15 @@ namespace AWSGymWebsite.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the AWSGymWebsiteUser class
 public class AWSGymWebsiteUser : IdentityUser
 {
+
+    //Usage of changing userinfo table
+    public string Userfname { get; set; }
+    public string Userlname { get; set; }
+    public string ContactNumber { get; set; }
+    public string Gender { get; set; }
+    public DateTime UserDob { get; set; }
+
+    public string role { get; set; }
+
 }
 

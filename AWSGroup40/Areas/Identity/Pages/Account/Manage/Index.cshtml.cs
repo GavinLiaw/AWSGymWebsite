@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using AWSGymWebsite.Areas.Identity.Data;
+using AWSGymWebsite.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,12 +16,12 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<AWSGymWebsiteUser> _userManager;
-        private readonly SignInManager<AWSGymWebsiteUser> _signInManager;
+        private readonly UserManager<Viewer> _userManager;
+        private readonly SignInManager<Viewer> _signInManager;
 
         public IndexModel(
-            UserManager<AWSGymWebsiteUser> userManager,
-            SignInManager<AWSGymWebsiteUser> signInManager)
+            UserManager<Viewer> userManager,
+        SignInManager<Viewer> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -32,6 +33,7 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public string Username { get; set; }
 
+        public string role { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -61,12 +63,13 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             public string PhoneNumber { get; set; }
         }
 
-        private async Task LoadAsync(AWSGymWebsiteUser user)
+        private async Task LoadAsync(Viewer user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
+            var urole = await _userManager.GetUserIdAsync(user);
             Username = userName;
+            role = urole;
 
             Input = new InputModel
             {

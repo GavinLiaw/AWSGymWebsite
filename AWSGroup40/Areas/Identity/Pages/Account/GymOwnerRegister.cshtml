@@ -1,7 +1,7 @@
 ﻿@page
-@model RegisterModel
+@model GymOwnerRegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "GymOwnerRegister";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -17,20 +17,15 @@
                 <label asp-for="Input.Email"></label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Input.Userfname"></label>
-                <input asp-for="Input.Userfname" class="form-control" />
-                <span asp-validation-for="Input.Userfname" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Userlname"></label>
-                <input asp-for="Input.Userlname" class="form-control" />
-                <span asp-validation-for="Input.Userlname" class="text-danger"></span>
-            </div>
             <div class="form-floating">
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
                 <label asp-for="Input.Password"></label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.BusinessSSM" class="form-control" aria-required="true" />
+                <label asp-for="Input.BusinessSSM"></label>
+                <span asp-validation-for="Input.BusinessSSM" class="text-danger"></span>
             </div>
             <div class="form-floating">
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
@@ -72,7 +67,7 @@
     </div>
 </div>
 <div>
-    <a asp-area="Identity" asp-page="/Account/GymOwnerRegister" >Are you a Gym Onwer? Register here</a>
+    <a></a>
 </div>
 
 @section Scripts {

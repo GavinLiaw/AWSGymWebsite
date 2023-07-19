@@ -20,32 +20,28 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using AWSGymWebsite.Models;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.DependencyInjection;
-using AWSGymWebsite.Data;
 
 namespace AWSGymWebsite.Areas.Identity.Pages.Account
 {
-    public class RegisterModel : PageModel
+    public class GymOwnerRegisterModel : PageModel
     {
-        private readonly SignInManager<Viewer> _signInManager;
-        private readonly UserManager<Viewer> _userManager;
-        private readonly IUserStore<Viewer> _userStore;
-        private readonly IUserEmailStore<Viewer> _emailStore;
+        private readonly SignInManager<AWSGymWebsiteUser> _signInManager;
+        private readonly UserManager<AWSGymWebsiteUser> _userManager;
+        private readonly IUserStore<AWSGymWebsiteUser> _userStore;
+        private readonly IUserEmailStore<AWSGymWebsiteUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-
-        public RegisterModel(
-            UserManager<Viewer> userManager,
-            IUserStore<Viewer> userStore,
-            SignInManager<Viewer> signInManager,
+        public GymOwnerRegisterModel(
+            UserManager<AWSGymWebsiteUser> userManager,
+            IUserStore<AWSGymWebsiteUser> userStore,
+            SignInManager<AWSGymWebsiteUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = (IUserEmailStore<Viewer>)GetEmailStore();
+            _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
@@ -86,12 +82,8 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [Display(Name = "First Name")]
-            public string Userfname { get; set; }
-
-            [Required]
-            [Display(Name = "Last Name")]
-            public string Userlname { get; set; }
+            [Display(Name = "Bsuiness SSM Number")]
+            public string BusinessSSM { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -120,24 +112,18 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        
-
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null )
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                //User Model
-                var user = new Viewer
+                var user = new GymOwner
                 {
-                    Email = Input.Email,                            
-                    Userfname = Input.Userfname,
-                    Userlname = Input.Userlname,
+                    Email = Input.Email,
                     ContactNumber = "None",
                     Gender = "None",
-                    role = "Viewer",
-                    RegDate = DateTime.Now,
+                    role = "GymOwner"
                 };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -146,10 +132,11 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    //Add User Role
+                    await _userManager.AddToRoleAsync(user, "Viewer");
+                    
+                    _logger.LogInformation("User created a new account with password.");
 
-                _logger.LogInformation("User created a new account with password.");
-
-                    //Retirve all data back from table to variable     
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -182,15 +169,27 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             return Page();
         }
 
-   
-        private IUserEmailStore<Viewer> GetEmailStore()
+        private AWSGymWebsiteUser CreateUser()
+        {
+            try
+            {
+                return Activator.CreateInstance<AWSGymWebsiteUser>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(AWSGymWebsiteUser)}'. " +
+                    $"Ensure that '{nameof(AWSGymWebsiteUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+        }
+
+        private IUserEmailStore<AWSGymWebsiteUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<Viewer>)_userStore;
+            return (IUserEmailStore<AWSGymWebsiteUser>)_userStore;
         }
-
     }
 }

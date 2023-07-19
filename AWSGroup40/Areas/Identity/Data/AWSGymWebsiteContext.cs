@@ -11,6 +11,12 @@ public class AWSGymWebsiteContext : IdentityDbContext<AWSGymWebsiteUser>
         : base(options)
     {
     }
+    public DbSet<AWSGymWebsite.Models.Viewer> viewer { get; set; }
+    public DbSet<AWSGymWebsite.Models.GymOwner> gymowner { get; set; }
+    public DbSet<AWSGymWebsite.Models.GymPage> gympage { get; set; }
+    public DbSet<AWSGymWebsite.Models.Subscriber> subscriber { get; set; }
+    public DbSet<AWSGymWebsite.Models.SNSTopic> snstopic { get; set; }
+   
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
