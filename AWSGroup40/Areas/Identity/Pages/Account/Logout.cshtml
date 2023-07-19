@@ -3,7 +3,27 @@
 @{
     ViewData["Title"] = "Log out";
 }
-
+@inject SignInManager<AWSGymWebsiteUser> SignInManager
+@inject UserManager<AWSGymWebsiteUser> UserManager
+@{
+    if (SignInManager.IsSignedIn(User))
+    {
+        if (User.IsInRole("GymOwner"))
+        {
+            
+            //redirect to home page
+            <script type="text/javascript">
+                window.location.href = "@Url.Action("Index","GymOwner")";
+            </script>
+        }
+        else{
+    //redirect to home page
+    <script type="text/javascript">
+    window.location.href = "@Url.Action("Index","Viewer")";
+    </script>
+        }
+    }
+}
 <header>
     <h1>@ViewData["Title"]</h1>
     @{

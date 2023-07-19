@@ -53,6 +53,7 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             this.roleManager = roleManager;
+
         }
 
         /// <summary>
@@ -120,8 +121,10 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
         }
 
         

@@ -1,5 +1,26 @@
 ﻿@page
 @model RegisterModel
+@inject SignInManager<AWSGymWebsiteUser> SignInManager
+@inject UserManager<AWSGymWebsiteUser> UserManager
+@{
+    if (SignInManager.IsSignedIn(User))
+    {
+        if (User.IsInRole("GymOwner"))
+        {
+            
+            //redirect to home page
+            <script type="text/javascript">
+                window.location.href = "@Url.Action("Index","GymOwner")";
+            </script>
+        }
+        else{
+    //redirect to home page
+    <script type="text/javascript">
+    window.location.href = "@Url.Action("Index","Viewer")";
+    </script>
+        }
+    }
+}
 @{
     ViewData["Title"] = "Register";
 }
