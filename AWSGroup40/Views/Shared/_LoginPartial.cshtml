@@ -4,43 +4,82 @@
 @inject SignInManager<AWSGymWebsiteUser> SignInManager
 @inject UserManager<AWSGymWebsiteUser> UserManager
 
-<ul class="navbar-nav">
+<div class="text-white" style="float:right;width:50%;">
 @if (SignInManager.IsSignedIn(User))
 {
         @if (User.IsInRole("GymOwner"))
         {
-            <li class="nav-item">
-                <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">My Gym</a>
-            </li>
-            <li class="nav-item">
-                <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-            </li>
-            <li class="nav-item">
-                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                    <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-                </form>
-            </li>
+            <div style="text-white">
+                <table style="width:100%;">
+                    <colgroup>
+                        <col style="width:35%;">
+                        <col style="width:20%;">
+                        <col style="width:25%;">
+                        <col style="width:20%;">
+                        </colgroup>
+                    <tr>
+                        <td></td>
+                    <td>
+                            <a class="nav-link " id="register" asp-area="Identity" style="min-width:auto;width:fit-content;font-size:26px;"
+                                asp-page="/Account/Register">My Gym</a>
+                </td>
+                        <td>
+                            <a id="manage" class="nav-link" asp-area="Identity" style="min-width:auto;width:fit-content"
+                                asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                        </td>
+                        <td>
+                            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button class="rounded-pill btn btn-lg text-white" type="submit"
+                                style="background-color:#6E38D5;font-weight:bold;width:200px;">
+                                    Log Out
+                                </button>
+                            </form>
+                        </td>
+                </tr>
+                </table>
+        </div>
         }
         else
         {
-                <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
+            <div style="text-white">
+                <table style="width:100%;">
+                    <colgroup>
+                        <col style="width:35%; ">
+                        <col style="width:20%; ">
+                        <col style="width:25%;">
+                        <col style="width:20%;">
+                    </colgroup>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <a id="manage" class="nav-link" asp-area="Identity" style="min-width:auto;width:fit-content"
+                       asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                        </td>
+                        <td>
+                            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button class="rounded-pill btn btn-lg text-white" type="submit"
+                                style="background-color:#6E38D5;font-weight:bold;width:200px;">
+                                    Log Out
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         }
 
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <div class="nav-item" style=" padding:0px 10px 0px 10px;">
+            <button class="rounded-pill btn btn-lg text-white"
+            style="background-color:#6E38D5;font-weight:bold;width:200px;float:right;"
+                onclick="location.href='/Identity/Account/Login'">Sign In
+        </button>
+        
+    </div>
 }
-</ul>
+</div>
