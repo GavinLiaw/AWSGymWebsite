@@ -45,9 +45,16 @@
         <!-- Nav bar -->
         <nav class="navbar  navbar-light  box-shadow text-white" style="height:120px;background-color:#221551;font-weight:bold;">
             <div class="" style="width:100%;padding:0px 15px; 0px 15px;">
-                <a class="navbar-brand text-white" style="font-size:40px;vertical-align:center;" href="~/">Omega Gym</a>
-                <a>About Us</a>
-                <a>Contact Us</a>
+                <a  asp-action="Index" asp-controller="Home" class="navbar-brand text-white"
+                style="font-size:40px;vertical-align:center;">Omega Gym</a>
+
+                <a asp-controller="Home" asp-action="AboutUs" style="text-decoration:none;"
+                   class="text-white" >About Us</a>
+
+                <span style="padding-left:15px;"></span>
+
+                <a asp-controller="Home" asp-action="ContactUs" style="text-decoration:none;"
+                class=" text-white">Contact Us</a>
                     @{
                         var result = Engine.FindView(ViewContext, "_LoginPartial", isMainPage: false);
                     }
