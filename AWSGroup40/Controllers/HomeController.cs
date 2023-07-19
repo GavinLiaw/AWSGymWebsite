@@ -39,7 +39,11 @@ namespace AWSGroup40.Controllers
             
         }
 
-        public IActionResult Privacy()
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+        public IActionResult ContactUs()
         {
             return View();
         }
