@@ -1,5 +1,8 @@
 ﻿using AWSGroup40.Models;
+using AWSGymWebsite.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Diagnostics;
 
 namespace AWSGroup40.Controllers
@@ -7,15 +10,33 @@ namespace AWSGroup40.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<AWSGymWebsiteUser> _userManager;
+        private readonly SignInManager<AWSGymWebsiteUser> _signInManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger   
+            ,UserManager<AWSGymWebsiteUser> userManager
+            ,SignInManager<AWSGymWebsiteUser> signInManager)
         {
             _logger = logger;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User)) {
+                if (User.IsInRole("GymOwner"))
+                {
+                    return RedirectToAction("Index", "GymOwner");
+                }
+                else {
+                    return RedirectToAction("Index", "Viewer");
+                }
+            }
+            else { 
+                return View();
+            }
+            
         }
 
         public IActionResult Privacy()
