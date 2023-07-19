@@ -24,23 +24,23 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<AWSGymWebsiteUser> _signInManager;
-        private readonly UserManager<AWSGymWebsiteUser> _userManager;
-        private readonly IUserStore<AWSGymWebsiteUser> _userStore;
-        private readonly IUserEmailStore<AWSGymWebsiteUser> _emailStore;
+        private readonly SignInManager<Viewer> _signInManager;
+        private readonly UserManager<Viewer> _userManager;
+        private readonly IUserStore<Viewer> _userStore;
+        private readonly IUserEmailStore<Viewer> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<AWSGymWebsiteUser> userManager,
-            IUserStore<AWSGymWebsiteUser> userStore,
-            SignInManager<AWSGymWebsiteUser> signInManager,
+            UserManager<Viewer> userManager,
+            IUserStore<Viewer> userStore,
+            SignInManager<Viewer> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
+            _emailStore = (IUserEmailStore<Viewer>)GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
@@ -107,13 +107,25 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        
+
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null )
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                //User Model
+                var user = new Viewer
+                {
+                    Email = Input.Email,                            
+                    Userfname = Input.Userfname,
+                    Userlname = Input.Userlname,
+                    ContactNumber = "None",
+                    Gender = "None",
+                    role = "Viewer",
+                    RegDate = DateTime.Now,
+                };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -155,27 +167,26 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private AWSGymWebsiteUser CreateUser()
+        private Viewer CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<AWSGymWebsiteUser>();
+                return Activator.CreateInstance<Viewer>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(AWSGymWebsiteUser)}'. " +
-                    $"Ensure that '{nameof(AWSGymWebsiteUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(Viewer)}'. " +
+                    $"Ensure that '{nameof(Viewer)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
-
-        private IUserEmailStore<AWSGymWebsiteUser> GetEmailStore()
+        private IUserEmailStore<Viewer> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<AWSGymWebsiteUser>)_userStore;
+            return (IUserEmailStore<Viewer>)_userStore;
         }
     }
 }
