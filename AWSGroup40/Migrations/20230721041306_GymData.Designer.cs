@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AWSGymWebsite.Migrations
 {
     [DbContext(typeof(AWSGymWebsiteContext))]
-    [Migration("20230719074212_GymData")]
+    [Migration("20230721041306_GymData")]
     partial class GymData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,15 +32,23 @@ namespace AWSGymWebsite.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("BusinessContactNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BusinessEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BusinessSSM")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -78,6 +86,9 @@ namespace AWSGymWebsite.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -114,8 +125,6 @@ namespace AWSGymWebsite.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("AWSGymWebsiteUser");
                 });
 
             modelBuilder.Entity("AWSGymWebsite.Models.GymPage", b =>
@@ -334,35 +343,6 @@ namespace AWSGymWebsite.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("AWSGymWebsite.Models.GymOwner", b =>
-                {
-                    b.HasBaseType("AWSGymWebsite.Areas.Identity.Data.AWSGymWebsiteUser");
-
-                    b.Property<string>("BusinessContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BusinessEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BusinessSSM")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("GymOwner");
-                });
-
-            modelBuilder.Entity("AWSGymWebsite.Models.Viewer", b =>
-                {
-                    b.HasBaseType("AWSGymWebsite.Areas.Identity.Data.AWSGymWebsiteUser");
-
-                    b.Property<DateTime>("RegDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasDiscriminator().HasValue("Viewer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

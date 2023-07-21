@@ -18,10 +18,23 @@ public class AWSGymWebsiteUser : IdentityUser
     public string Gender { get; set; }
     public DateTime UserDob { get; set; }
 
-    [DataType(DataType.Date)]
     public DateTime RegDate { get; set; }
 
     public string role { get; set; }
 
+    public string BusinessContactNumber { get; set; }
+
+    public string BusinessEmail { get; set; }
+
+    public string BusinessSSM { get; set; }//New: ABCD Sdn. Bhd. – Company No. 202201234565
+
+    public AWSGymWebsiteUser()
+    { 
+        this.BusinessEmail = " ";
+        this.BusinessContactNumber = " ";
+        this.BusinessSSM = " ";
+    }
+
 }
+
 

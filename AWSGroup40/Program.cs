@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AWSGymWebsiteContextConnection") ?? throw new InvalidOperationException("Connection string 'AWSGymWebsiteContextConnection' not found.");
 
 builder.Services.AddDbContext<AWSGymWebsiteContext>(options =>
-    options.UseSqlServer(connectionString));
+options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<AWSGymWebsiteUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<AWSGymWebsiteUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AWSGymWebsiteContext>();
 

@@ -1,0 +1,36 @@
+﻿@page
+@model BusinessModel
+
+@{
+    ViewData["Title"] = "Business";
+    ViewData["ActivePage"] = ManageNavPages.Business;
+}
+
+<h3>@ViewData["Title"] Info</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="Business-form" method="post">
+            <span> </span>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="BusinessEmail" class="form-control" />
+                <label asp-for="BusinessEmail" class="form-label"></label>
+            </div>
+             <div class="form-floating">
+                <input asp-for="BusinessContactNumber" class="form-control" />
+                <label asp-for="BusinessContactNumber" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="BusinessSSM" class="form-control" />
+                <label asp-for="BusinessSSM" class="form-label"></label>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

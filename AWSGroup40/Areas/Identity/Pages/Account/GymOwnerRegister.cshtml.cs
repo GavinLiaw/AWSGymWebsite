@@ -95,7 +95,7 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             public string Userlname { get; set; }
 
             [Required]
-            [Display(Name = "Bsuiness SSM Number")]
+            [Display(Name = "Business SSM Number")]
             public string BusinessSSM { get; set; }
 
             /// <summary>
@@ -134,11 +134,12 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new GymOwner
+                var user = new AWSGymWebsiteUser
                 {
                     Email = Input.Email,
                     Userfname = Input.Userfname,
                     Userlname = Input.Userlname,
+                    BusinessSSM = Input.BusinessSSM,
                     ContactNumber = "None",
                     Gender = "None",
                     role = "GymOwner"
