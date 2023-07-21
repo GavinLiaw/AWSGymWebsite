@@ -16,3 +16,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.table1 tr td {
+    padding:15px;
+}

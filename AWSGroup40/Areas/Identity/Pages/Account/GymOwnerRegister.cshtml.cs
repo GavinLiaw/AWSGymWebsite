@@ -98,6 +98,14 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             [Display(Name = "Business SSM Number")]
             public string BusinessSSM { get; set; }
 
+            [Required]
+            [Display(Name = "Business Email")]
+            public string BusinessEmail { get; set; }
+
+            [Required]
+            [Display(Name = "Business Contact Number")]
+            public string BusinessContactNumber { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -140,8 +148,8 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
                     Userfname = Input.Userfname,
                     Userlname = Input.Userlname,
                     BusinessSSM = Input.BusinessSSM,
-                    ContactNumber = "None",
-                    Gender = "None",
+                    BusinessContactNumber= Input.BusinessContactNumber,
+                    BusinessEmail= Input.BusinessEmail,
                     role = "GymOwner"
                 };
 

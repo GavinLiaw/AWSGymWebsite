@@ -87,7 +87,6 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
-            [Display(Name = "Email")]
             public string Email { get; set; }
 
             [Required]
@@ -141,8 +140,6 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
                     Email = Input.Email,                            
                     Userfname = Input.Userfname,
                     Userlname = Input.Userlname,
-                    ContactNumber = "None",
-                    Gender = "None",
                     role= "Viewer",
                     RegDate = DateTime.Now,
                 };
