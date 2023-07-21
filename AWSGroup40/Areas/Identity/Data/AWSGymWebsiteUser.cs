@@ -29,7 +29,9 @@ public class AWSGymWebsiteUser : IdentityUser
     public string BusinessSSM { get; set; }//New: ABCD Sdn. Bhd. – Company No. 202201234565
 
     public AWSGymWebsiteUser()
-    { 
+    {
+        this.Gender = " ";
+        this.ContactNumber = " ";
         this.BusinessEmail = " ";
         this.BusinessContactNumber = " ";
         this.BusinessSSM = " ";
