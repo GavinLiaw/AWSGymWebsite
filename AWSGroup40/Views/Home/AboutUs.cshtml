@@ -8,29 +8,41 @@
     <title>@ViewData["Title"]</title>
     <style>
         /* Your CSS styles go here */
-        .centered-text {
+        h1 {
             text-align: center;
-            display: block;
-            max-width: 60%;
+            display:block;
+            max-width: 80%;
             margin: 0 auto;
-            font-size: 18px;
-            line-height: 1.6;
-            font-family: Arial, sans-serif;
+            font-size:6px;
+            line-height: 1.5;
+            font-family: Arial;
         }
-
+        h2 {
+            font-size: 10px;
+        }
         /* Add background image to the body element */
         body {
             background-image: url('gymbackground.jpg');
             background-size: cover;
             background-repeat: no-repeat;
         }
+
+        .centered-text {
+         text-align: center; /* Center the text inside the div */
+        }   
     </style>
 </head>
 <body>
+    <div class="centered-text">
     <br>
     <br>
-    <h1 class="centered-text">We wish to let people find their suitable gym<br>by providing valuable information and creating a seamless experience for potential gym-goers</h1>
-    <h2 class="centered-text">All you need is<br>View, Select, and Subscribe</h2>
-    <h3>hi</h3>
+    <h1>We wish to let people find their suitable gym
+    by providing 
+    <br>
+    valuable information and creating a seamless experience for potential gym-goers
+    </h1>
+    <br>
+    <h2>All you need is to<br>View, Select, and Subscribe</h2>
+    </div>
 </body>
 </html>
