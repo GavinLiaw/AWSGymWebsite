@@ -3,5 +3,33 @@
     ViewData["Title"] = "AboutUs";
 }
 
-<h1>AboutUs</h1>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        /* Your CSS styles go here */
+        .centered-text {
+            text-align: center;
+            display: block;
+            max-width: 60%;
+            margin: 0 auto;
+            font-size: 18px;
+            line-height: 1.6;
+            font-family: Arial, sans-serif;
+        }
 
+        /* Add background image to the body element */
+        body {
+            background-image: url('gymbackground.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <br>
+    <h1 class="centered-text">We wish to let people find their suitable gym<br>by providing valuable information and creating a seamless experience for potential gym-goers</h1>
+    <h2 class="centered-text">All you need is<br>View, Select, and Subscribe</h2>
+</body>
+</html>
