@@ -31,12 +31,17 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public string Username { get; set; }
-
-        public string fname { get; set; }
-        public string lname { get; set; }
-        public string gender { get; set; }
-        public string contact { get; set; }
+        [Required]
+        public string Userfname { get; set; }
+        [Required]
+        public string Userlname { get; set; }
+        [Required]
+        public string Gender { get; set; }
+        [Required]
+        public string ContactNumber { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime UserDob { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -61,9 +66,12 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            public string Userfname { get; set; }
+            public string Userlname { get; set; }
+            public string Gender { get; set; }
+            public string ContactNumber { get; set; }
+            public DateTime UserDob { get; set; }
+
         }
 
         private async Task LoadAsync(AWSGymWebsiteUser user)
@@ -75,16 +83,25 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             var ulname = user.Userlname;
             var ugender = user.Gender;
             var ucontact = user.ContactNumber;
+            var udob = user.UserDob;
 
-            fname = ufname;
-            lname = ulname;
-            gender = ugender;
-            contact = ucontact;
+            Userfname = ufname;
+            Userlname = ulname;
+            Gender = ugender;
+            ContactNumber = ucontact;
+            UserDob = udob;
 
             Input = new InputModel
             {
+                Userfname = ufname,
+                Userlname = ulname,
+                Gender = ugender,
+                ContactNumber = ucontact,
+                UserDob = udob,
             };
+
         }
+    
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -113,6 +130,13 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             }
 
             //Update Profile
+            //Update Business Profile Here
+            user.ContactNumber = Input.ContactNumber;
+            user.Userfname = Input.Userfname;
+            user.Userlname= Input.Userlname;
+            user.Gender = Input.Gender;
+            user.UserDob = Input.UserDob;
+            await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

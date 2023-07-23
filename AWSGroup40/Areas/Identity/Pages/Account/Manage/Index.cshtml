@@ -16,20 +16,24 @@
             <span> </span>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
-                <input asp-for="fname" class="form-control" />
-                <label asp-for="fname" class="form-label"></label>
+                <input asp-for="Userfname" class="form-control" />
+                <label asp-for="Userfname" class="form-label"></label>
             </div>
             <div class="form-floating">
-                <input asp-for="lname" class="form-control" />
-                <label asp-for="lname" class="form-label"></label>
+                <input asp-for="Userlname" class="form-control" />
+                <label asp-for="Userlname" class="form-label"></label>
             </div>
             <div class="form-floating">
-                <input asp-for="gender" class="form-control" />
-                <label asp-for="gender" class="form-label"></label>
+                <input type="date" asp-for="UserDob" class="form-control" />
+                <label asp-for="UserDob" class="form-label"></label>
             </div>
             <div class="form-floating">
-                <input asp-for="contact" class="form-control" />
-                <label asp-for="contact" class="form-label"></label>
+                <input asp-for="Gender" class="form-control" />
+                <label asp-for="Gender" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="ContactNumber" class="form-control" />
+                <label asp-for="ContactNumber" class="form-label"></label>
             </div>
 
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
