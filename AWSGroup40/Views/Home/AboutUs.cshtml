@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "AboutUs";
 }
 
@@ -10,10 +9,10 @@
         /* Your CSS styles go here */
         h1 {
             text-align: center;
-            display:block;
+            display: block;
             max-width: 80%;
             margin: 0 auto;
-            font-size:6px;
+            font-size: 6px;
             line-height: 1.5;
             font-family: Arial;
         }
@@ -22,27 +21,37 @@
         }
         /* Add background image to the body element */
         body {
-            background-image: url('gymbackground.jpg');
+            background-image: url('.\img\download.jpg');
             background-size: cover;
             background-repeat: no-repeat;
         }
 
         .centered-text {
-         text-align: center; /* Center the text inside the div */
-        }   
+            text-align: center; /* Center the text inside the div */
+        }
+
+        .header-container {
+            display: flex; /* Use flexbox to align elements side by side */
+            align-items: center; /* Vertically center align the elements */
+            justify-content: center; /* Horizontally center align the elements */
+            flex-direction: column; /* Arrange elements in a column */
+        }
+
+        .header-container img {
+            max-width: 200px; /* Adjust the size of the image */
+        }
     </style>
 </head>
 <body>
     <div class="centered-text">
-    <br>
-    <br>
-    <h1>We wish to let people find their suitable gym
-    by providing 
-    <br>
-    valuable information and creating a seamless experience for potential gym-goers
-    </h1>
-    <br>
-    <h2>All you need is to<br>View, Select, and Subscribe</h2>
+        <br>
+        <br>
+        <div class="header-container">
+            <img src="gym-with-indoor-cycling-equipment.jpg" alt="Gym Image"> 
+            <h1>We wish to let people find their suitable gym<br>by providing valuable information and creating a seamless experience for potential gym-goers</h1>
+        </div>
+        <br>
+        <h2>All you need is to<br>View, Select, and Subscribe</h2>
     </div>
 </body>
 </html>
