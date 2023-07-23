@@ -70,7 +70,6 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Required]
             [EmailAddress]
-            [Display(Name = "New email")]
             public string NewEmail { get; set; }
         }
 

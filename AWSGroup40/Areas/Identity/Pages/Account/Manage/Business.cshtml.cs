@@ -31,9 +31,11 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        [Required]
         public string BusinessEmail { get; set; }
-
+        [Required]
         public string BusinessContactNumber { get; set; }
+        [Required]
         public string BusinessSSM { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -113,6 +115,10 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             }
 
             //Update Business Profile Here
+            user.BusinessEmail = Input.BusinessEmail;
+            user.BusinessContactNumber= Input.BusinessContactNumber;
+            user.BusinessSSM = Input.BusinessSSM;
+           await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your Business Info has been updated";
