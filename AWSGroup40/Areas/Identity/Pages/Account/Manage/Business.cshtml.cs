@@ -31,11 +31,16 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Business Email is Required")]
+        [EmailAddress]
         public string BusinessEmail { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Business Contact Number is Required")]
+        [RegularExpression("[0-9]{2,3}-[0-9]{3}-[0-9]{4}", ErrorMessage = "Format: 012-345-6789")]
         public string BusinessContactNumber { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Business SSM Number is Required")]
+        [RegularExpression("[0-9]{4}[0-9]{2}[0-9]{6}", ErrorMessage = "12 digit SSM Register Number")]
         public string BusinessSSM { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

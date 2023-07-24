@@ -31,15 +31,23 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
+
+        [Required(ErrorMessage = "First Name is Required")]
+        [RegularExpression("[a-zA-Z]{1,99}", ErrorMessage = "Alphabet only")]
         public string Userfname { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Last Name is Required")]
+        [RegularExpression("[a-zA-Z]{1,99}", ErrorMessage = "Alphabet only")]
         public string Userlname { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Gender is Required")]
         public string Gender { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Contact Number is Required")]
+        [RegularExpression("[0-9]{2,3}-[0-9]{3}-[0-9]{4}", ErrorMessage = "Format: 012-345-6789")]
         public string ContactNumber { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Date of Birth is Required")]
         [DataType(DataType.Date)]
         public DateTime UserDob { get; set; }
         /// <summary>
@@ -66,10 +74,16 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+
+
             public string Userfname { get; set; }
+
             public string Userlname { get; set; }
+
             public string Gender { get; set; }
+
             public string ContactNumber { get; set; }
+
             public DateTime UserDob { get; set; }
 
         }
