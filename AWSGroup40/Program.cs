@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using AWSGymWebsite.Data;
 using AWSGymWebsite.Areas.Identity.Data;
 using AWSGymWebsite.Models;
+using Amazon.XRay.Recorder.Handlers.AwsSdk;
+using Amazon.XRay.Recorder.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AWSGymWebsiteContextConnection") ?? throw new InvalidOperationException("Connection string 'AWSGymWebsiteContextConnection' not found.");
@@ -28,6 +30,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+//
+app.UseXRay("XRay-GymWebsite");
 app.UseStaticFiles();
 
 app.UseRouting();
