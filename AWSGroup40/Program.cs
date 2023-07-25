@@ -18,6 +18,8 @@ builder.Services.AddDefaultIdentity<AWSGymWebsiteUser>(options => options.SignIn
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+AWSSDKHandler.RegisterXRayForAllServices();
 
 var app = builder.Build();
 

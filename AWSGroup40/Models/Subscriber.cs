@@ -14,5 +14,7 @@ namespace AWSGymWebsite.Models
 
         public int GymID { get; set; }
 
+        public DateTime SubDate { get; set; }
+
     }
 }
