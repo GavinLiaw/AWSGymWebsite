@@ -80,29 +80,34 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Email is Required")]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
 
-            [Required]
+            [Required(ErrorMessage = "First Name is Required")]
+            [RegularExpression("[a-zA-Z]{1,99}", ErrorMessage = "Alphabet only")]
             [Display(Name = "First Name")]
             public string Userfname { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Last Name is Required")]
+            [RegularExpression("[a-zA-Z]{1,99}", ErrorMessage = "Alphabet only")]
             [Display(Name = "Last Name")]
             public string Userlname { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Business SSM Number is Required")]
+            [RegularExpression("[0-9]{4}[0-9]{2}[0-9]{6}", ErrorMessage = "12 digit SSM Register Number")]
             [Display(Name = "Business SSM Number")]
             public string BusinessSSM { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Business Email is Required")]
+            [EmailAddress]
             [Display(Name = "Business Email")]
             public string BusinessEmail { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Business Contact Number is Required")]
+            [RegularExpression("[0-9]{2,3}-[0-9]{3}-[0-9]{4}", ErrorMessage = "Format: 012-345-6789")]
             [Display(Name = "Business Contact Number")]
             public string BusinessContactNumber { get; set; }
 

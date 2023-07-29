@@ -85,15 +85,17 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Email is Required")]
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "First Name is Required")]
+            [RegularExpression("[a-zA-Z]{1,99}", ErrorMessage = "Alphabet only")]
             [Display(Name = "First Name")]
             public string Userfname { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Last Name is Required")]
+            [RegularExpression("[a-zA-Z]{1,99}", ErrorMessage = "Alphabet only")]
             [Display(Name = "Last Name")]
             public string Userlname { get; set; }
 

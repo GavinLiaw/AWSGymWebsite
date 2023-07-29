@@ -9,31 +9,49 @@
 <h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <br />
-<br />
 <div class="" style="width:100%;">
     <div class="col-md-6">
         <form id="profile-form" method="post">
             <span> </span>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <input asp-for="Userfname" class="form-control" />
-                <label asp-for="Userfname" class="form-label"></label>
+            <div class="">
+                <span class="fw-bold" style="">First Name</span>
+                <br />
+                <input asp-for="Userfname" class="form-control" style="" pattern="[a-zA-Z\s]+" title="Alphabet only" />
+                <span asp-validation-for="Userfname" class="text-danger fw-bold"></span>
+                <p></p>
             </div>
-            <div class="form-floating">
-                <input asp-for="Userlname" class="form-control" />
-                <label asp-for="Userlname" class="form-label"></label>
+            <div class="">
+                <span class="fw-bold" style="">Last Name</span>
+                <br />
+                <input asp-for="Userlname" class="form-control" pattern="[a-zA-Z\s]+" title="Alphabet only" />
+                <span asp-validation-for="Userlname" class="text-danger fw-bold"></span>
+                <p></p>
             </div>
-            <div class="form-floating">
+            <div class="">
+                <span class="fw-bold" style="">Date of Birth</span>
+                <br />
                 <input type="date" asp-for="UserDob" class="form-control" />
-                <label asp-for="UserDob" class="form-label"></label>
+                <span asp-validation-for="UserDob" class="text-danger fw-bold"></span>
+                <p></p>
             </div>
-            <div class="form-floating">
-                <input asp-for="Gender" class="form-control" />
-                <label asp-for="Gender" class="form-label"></label>
+            <div class="">
+                <span class="fw-bold" style="">Gender</span>
+                <br />
+                <select asp-for="Gender" class="form-select" aria-label="">
+                    <option value="M" class="fw-bold">M</option>
+                    <option value="F" class="fw-bold">F</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger fw-bold"></span>
+                <p></p>
             </div>
-            <div class="form-floating">
-                <input asp-for="ContactNumber" class="form-control" />
-                <label asp-for="ContactNumber" class="form-label"></label>
+            <div class="">
+                <span class="fw-bold" style="">Contact Number</span>
+                <br />
+                <input asp-for="ContactNumber" class="form-control" pattern="[0-9]{2,3}-[0-9]{3}-[0-9]{4}" placeholder="012-345-6789" />
+                <span asp-validation-for="ContactNumber" class="text-danger fw-bold"></span>
+                <br />
+                <br />
             </div>
 
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>

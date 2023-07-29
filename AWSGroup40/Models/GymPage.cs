@@ -39,5 +39,7 @@ namespace AWSGymWebsite.Models
         public String Details { get; set; }
         public String ImgURL { get; set; }
 
+        public int viewer { get; set; }
+
     }
 }
