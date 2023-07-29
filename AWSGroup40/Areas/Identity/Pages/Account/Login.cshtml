@@ -1,4 +1,5 @@
 ﻿@page
+@using AWSGymWebsite.Models;
 @model LoginModel
 @{
     ViewData["Title"] = "Log in";
@@ -24,8 +25,9 @@
             </script>
         }
     }
+    var cf = new CloudFront();
 }
-<div style="width:100%;background-image:url(/img/bg1.jpg);height:660px;background-size: cover;background-repeat:no-repeat">
+<div style="width:100%;background-image:url(@cf.cloudfront/bg1.jpg);height:660px;background-size: cover;background-repeat:no-repeat">
     <table class="" style="width:100%;padding:20px 10px 0px 10px;">
         <colgroup>
             <col style="width:50%;" />

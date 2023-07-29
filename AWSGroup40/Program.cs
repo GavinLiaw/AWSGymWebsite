@@ -5,6 +5,8 @@ using AWSGymWebsite.Areas.Identity.Data;
 using AWSGymWebsite.Models;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using Amazon.XRay.Recorder.Core;
+using static System.Net.WebRequestMethods;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AWSGymWebsiteContextConnection") ?? throw new InvalidOperationException("Connection string 'AWSGymWebsiteContextConnection' not found.");
