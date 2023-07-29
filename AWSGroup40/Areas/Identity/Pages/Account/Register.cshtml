@@ -1,6 +1,8 @@
 ﻿@page
 @model RegisterModel
 @using AWSGymWebsite.Models;
+@using Amazon.XRay.Recorder.Core;
+@using Amazon.XRay.Recorder.Handlers.AwsSdk;
 @inject SignInManager<AWSGymWebsiteUser> SignInManager
 @inject UserManager<AWSGymWebsiteUser> UserManager
 @{

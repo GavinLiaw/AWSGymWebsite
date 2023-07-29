@@ -1,6 +1,8 @@
 ﻿@page
 @using AWSGymWebsite.Models;
 @model LoginModel
+@using Amazon.XRay.Recorder.Core;
+@using Amazon.XRay.Recorder.Handlers.AwsSdk;
 @{
     ViewData["Title"] = "Log in";
 }
