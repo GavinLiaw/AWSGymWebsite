@@ -1,4 +1,5 @@
 ﻿@page
+@using AWSGymWebsite.Models;
 @model GymOwnerRegisterModel
 @{
     ViewData["Title"] = "GymOwnerRegister";
@@ -25,8 +26,9 @@
             </script>
         }
     }
+    var cf = new CloudFront();
 }
-    <div style="width:100%;background-image:url(/img/hero-bg.jpg);height:880px;background-size: cover;background-repeat:no-repeat">
+<div style="width:100%;background-image:url(@cf.cloudfront/hero-bg.jpg);height:880px;background-size: cover;background-repeat:no-repeat">
 
         <div style="width:50%;" class=" align-content-center">
             <div style="padding:5px;text-align:center;">
