@@ -106,11 +106,6 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
             [Display(Name = "Business Email")]
             public string BusinessEmail { get; set; }
 
-            [Required(ErrorMessage = "Business Contact Number is Required")]
-            [RegularExpression("[0-9]{2,3}-[0-9]{3}-[0-9]{4}", ErrorMessage = "Format: 012-345-6789")]
-            [Display(Name = "Business Contact Number")]
-            public string BusinessContactNumber { get; set; }
-
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -153,7 +148,6 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
                     Userfname = Input.Userfname,
                     Userlname = Input.Userlname,
                     BusinessSSM = Input.BusinessSSM,
-                    BusinessContactNumber= Input.BusinessContactNumber,
                     BusinessEmail= Input.BusinessEmail,
                     role = "GymOwner"
                 };
