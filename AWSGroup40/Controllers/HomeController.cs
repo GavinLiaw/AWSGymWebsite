@@ -38,7 +38,10 @@ namespace AWSGroup40.Controllers
             }
             
         }
-
+        public IActionResult goregister()
+        {
+            return View("Register");
+        }
         public IActionResult AboutUs()
         {
             return View();
