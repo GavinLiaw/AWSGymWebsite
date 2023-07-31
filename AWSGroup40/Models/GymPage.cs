@@ -10,7 +10,7 @@ namespace AWSGymWebsite.Models
         [Key]//primary key below
         public int ID { get; set; }
 
-        public int OwnerID { get; set; }
+        public string? OwnerID { get; set; }
 
         [Required(ErrorMessage = "Gym Name is Required")]
         [Display(Name = "Gym Name")]
@@ -37,7 +37,8 @@ namespace AWSGymWebsite.Models
         [Required(ErrorMessage = "Gym Details is Required")]
         [Display(Name = "Gym Details")]
         public String Details { get; set; }
-        public String ImgURL { get; set; }
+        public String? ImgURL { get; set; }
+        public String? S3Key { get; set; }
 
         public int viewer { get; set; }
 

@@ -16,25 +16,27 @@ using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 
+
 namespace AWSGymWebsite.Controllers
 {
-    public class GymOwnerController : Controller
+    public class GymPageController : Controller
     {
         private readonly AWSGymWebsiteContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<AWSGymWebsiteUser> _userManager;
 
-        public GymOwnerController(AWSGymWebsiteContext context, UserManager<AWSGymWebsiteUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public GymPageController(AWSGymWebsiteContext context, UserManager<AWSGymWebsiteUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
         }
+        
 
-        private const string s3BucketName = "group40aws";
-
+        private const string s3BucketName = "mvcflowershoplab13";
+       
         //function extra: connection string to the AWS Account
-        private List<string> getValues()
+        /*private List<string> getValues()
         {
             List<string> values = new List<string>();
 
@@ -51,9 +53,8 @@ namespace AWSGymWebsite.Controllers
 
             return values;
         }
-        
-
-        // GET: GymOwner
+        */
+        // GET: GymPage
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -64,7 +65,7 @@ namespace AWSGymWebsite.Controllers
                           Problem("Entity set 'AWSGymWebsiteContext.GymPage'  is null.");
         }
 
-        // GET: GymOwner/Details/5
+        // GET: GymPage/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.GymPage == null)
@@ -82,20 +83,20 @@ namespace AWSGymWebsite.Controllers
             return View(gymPage);
         }
 
-        // GET: GymOwner/Create
+        // GET: GymPage/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: GymOwner/Create
+        // POST: GymPage/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile imagefile)
+        public async Task<IActionResult> Create([Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage/*, IFormFile imagefile*/)
         {
-            try
+            /*try
             {
                 List<string> getKeys = getValues();
                 var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
@@ -104,7 +105,7 @@ namespace AWSGymWebsite.Controllers
                 PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
                 {
                     InputStream = imagefile.OpenReadStream(),
-                    BucketName = s3BucketName + "/img",
+                    BucketName = s3BucketName + "/images",
                     Key = imagefile.FileName,
                     CannedACL = S3CannedACL.PublicRead
                 };
@@ -115,22 +116,23 @@ namespace AWSGymWebsite.Controllers
             {
                 return BadRequest("Error: " + ex.Message);
             }
-            gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
-            gymPage.S3Key = imagefile.FileName;
+            gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/images/" + imagefile.FileName;
+            gymPage.S3Key = imagefile.FileName;*/
             var user = await _userManager.GetUserAsync(User);
             var userId = user.Id;
             gymPage.OwnerID = userId;
 
             if (ModelState.IsValid)
             {
-                _context.Add(gymPage);
+
+                _context.GymPage.Add(gymPage);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(gymPage);
         }
 
-        // GET: GymOwner/Edit/5
+        // GET: GymPage/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.GymPage == null)
@@ -146,7 +148,7 @@ namespace AWSGymWebsite.Controllers
             return View(gymPage);
         }
 
-        // POST: GymOwner/Edit/5
+        // POST: GymPage/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -181,7 +183,7 @@ namespace AWSGymWebsite.Controllers
             return View(gymPage);
         }
 
-        // GET: GymOwner/Delete/5
+        // GET: GymPage/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.GymPage == null)
@@ -199,7 +201,7 @@ namespace AWSGymWebsite.Controllers
             return View(gymPage);
         }
 
-        // POST: GymOwner/Delete/5
+        // POST: GymPage/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -1,0 +1,75 @@
+﻿@model AWSGymWebsite.Models.GymPage
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>GymPage</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!--<div class="form-group">
+                <label asp-for="OwnerID" class="control-label"></label>
+                <input asp-for="OwnerID" class="form-control" />
+                <span asp-validation-for="OwnerID" class="text-danger"></span>
+            </div>-->
+            <input asp-for="OwnerID" type="hidden" value="" />
+            <div class="form-group">
+                <label asp-for="GymName" class="control-label"></label>
+                <input asp-for="GymName" class="form-control" />
+                <span asp-validation-for="GymName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GymLocation" class="control-label"></label>
+                <input asp-for="GymLocation" class="form-control" />
+                <span asp-validation-for="GymLocation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClosingTime" class="control-label"></label>
+                <input asp-for="ClosingTime" class="form-control" />
+                <span asp-validation-for="ClosingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OpeningTime" class="control-label"></label>
+                <input asp-for="OpeningTime" class="form-control" />
+                <span asp-validation-for="OpeningTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactNumber" class="control-label"></label>
+                <input asp-for="ContactNumber" class="form-control" />
+                <span asp-validation-for="ContactNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Details" class="control-label"></label>
+                <input asp-for="Details" class="form-control" />
+                <span asp-validation-for="Details" class="text-danger"></span>
+            </div>
+            
+                <div class="form-group">
+                    <label asp-for="ImgURL" class="control-label"></label>
+                    <input asp-for="ImgURL" class="form-control" />
+                    <span asp-validation-for="ImgURL" class="text-danger"></span>
+                </div>
+            <!--
+            <div class="form-group">
+                <label asp-for="ImgURL" class="control-label"></label>
+                <input type="file" name="imagefile" accept="image/*" />
+            </div>
+            -->
+            <input asp-for="S3Key" type="hidden" value="" />
+            <input asp-for="viewer" type="hidden" value=0 />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -11,7 +11,7 @@ public class AWSGymWebsiteContext : IdentityDbContext<AWSGymWebsiteUser>
         : base(options)
     {
     }
-    public DbSet<AWSGymWebsite.Models.GymPage> gympage { get; set; }
+    public DbSet<AWSGymWebsite.Models.GymPage> GymPage { get; set; }
     public DbSet<AWSGymWebsite.Models.Subscriber> subscriber { get; set; }
     public DbSet<AWSGymWebsite.Models.SNSTopic> snstopic { get; set; }
    
