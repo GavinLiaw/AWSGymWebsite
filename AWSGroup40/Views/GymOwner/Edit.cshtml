@@ -45,11 +45,17 @@
                 <span asp-validation-for="Details" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImgURL" class="control-label"></label>
-                <input asp-for="ImgURL" class="form-control" />
-                <span asp-validation-for="ImgURL" class="text-danger"></span>
+                <label>Upload file</label>
+                <input type="file" name="imagefile" accept="image/*" />
             </div>
-            <<input type="hidden" asp-for="S3Key" />
+            @if (!string.IsNullOrEmpty(Model.ImgURL))
+            {
+                
+                    <label>Current Image</label><br />
+                    <img src="@Model.ImgURL" width="200px" height="200px" />
+            }
+            <input type="hidden" asp-for="ImgURL" />
+            <input type="hidden" asp-for="S3Key" />
             <input type="hidden" asp-for="viewer" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

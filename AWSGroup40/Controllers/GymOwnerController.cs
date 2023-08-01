@@ -104,8 +104,8 @@ namespace AWSGymWebsite.Controllers
                 PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
                 {
                     InputStream = imagefile.OpenReadStream(),
-                    BucketName = s3BucketName + "/img",
-                    Key = imagefile.FileName,
+                    BucketName = s3BucketName,
+                    Key = "img/"+imagefile.FileName,
                     CannedACL = S3CannedACL.PublicRead
                 };
 
@@ -151,11 +151,37 @@ namespace AWSGymWebsite.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile imagefile)
         {
             if (id != gymPage.ID)
             {
                 return NotFound();
+            }
+
+            if (imagefile != null)
+            {
+                try
+                {
+                    List<string> getKeys = getValues();
+                    var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+
+                    //upload to S3
+                    PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
+                    {
+                        InputStream = imagefile.OpenReadStream(),
+                        BucketName = s3BucketName,
+                        Key = "img/" + imagefile.FileName,
+                        CannedACL = S3CannedACL.PublicRead
+                    };
+
+                    await awsS3client.PutObjectAsync(uploadRequest);
+                }
+                catch (AmazonS3Exception ex)
+                {
+                    return BadRequest("Error: " + ex.Message);
+                }
+                gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
+                gymPage.S3Key = imagefile.FileName;
             }
 
             if (ModelState.IsValid)
