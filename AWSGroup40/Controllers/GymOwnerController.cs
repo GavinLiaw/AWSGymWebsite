@@ -175,11 +175,21 @@ namespace AWSGymWebsite.Controllers
                     };
 
                     await awsS3client.PutObjectAsync(uploadRequest);
+
+                    //create a delete request 
+                    DeleteObjectRequest deleteRequest = new DeleteObjectRequest
+                    {
+                        BucketName = s3BucketName,
+                        //Old Image File Name
+                        Key = "img/" + gymPage.S3Key
+                    };
+                    await awsS3client.DeleteObjectAsync(deleteRequest);
                 }
                 catch (AmazonS3Exception ex)
                 {
                     return BadRequest("Error: " + ex.Message);
                 }
+
                 gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
                 gymPage.S3Key = imagefile.FileName;
             }
