@@ -15,6 +15,7 @@ using System.IO;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.SimpleNotificationService;
 
 namespace AWSGymWebsite.Controllers
 {
@@ -97,8 +98,12 @@ namespace AWSGymWebsite.Controllers
         {
             try
             {
+                // Get Credential Key
                 List<string> getKeys = getValues();
+                // Open S3
                 var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+                //Open SNS
+               var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
 
                 //upload to S3
                 PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
@@ -110,6 +115,9 @@ namespace AWSGymWebsite.Controllers
                 };
 
                 await awsS3client.PutObjectAsync(uploadRequest);
+
+                //Create New SNS Topic
+                await snsClient.CreateTopicAsync(gymPage.GymName);
             }
             catch (AmazonS3Exception ex)
             {
@@ -120,6 +128,8 @@ namespace AWSGymWebsite.Controllers
             var user = await _userManager.GetUserAsync(User);
             var userId = user.Id;
             gymPage.OwnerID = userId;
+
+
 
             if (ModelState.IsValid)
             {
@@ -220,6 +230,8 @@ namespace AWSGymWebsite.Controllers
         // GET: GymOwner/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+
+
             if (id == null || _context.GymPage == null)
             {
                 return NotFound();
@@ -240,6 +252,9 @@ namespace AWSGymWebsite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            List<string> getKeys = getValues();
+            var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+
             if (_context.GymPage == null)
             {
                 return Problem("Entity set 'AWSGymWebsiteContext.GymPage'  is null.");
@@ -251,6 +266,20 @@ namespace AWSGymWebsite.Controllers
             }
             
             await _context.SaveChangesAsync();
+
+            //Delete Image File
+            //create a delete request 
+            DeleteObjectRequest deleteRequest = new DeleteObjectRequest
+            {
+                BucketName = s3BucketName,
+                //Old Image File Name
+                Key = "img/" + gymPage.S3Key
+            };
+            await awsS3client.DeleteObjectAsync(deleteRequest);
+
+            //Delete SNS Topic
+            //await client.DeleteTopicAsync(topicArn);
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,5 +1,6 @@
 ﻿using AWSGroup40.Models;
 using AWSGymWebsite.Areas.Identity.Data;
+using AWSGymWebsite.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
