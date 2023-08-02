@@ -16,6 +16,7 @@ using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.SimpleNotificationService;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 
 namespace AWSGymWebsite.Controllers
 {
@@ -24,7 +25,7 @@ namespace AWSGymWebsite.Controllers
         private readonly AWSGymWebsiteContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<AWSGymWebsiteUser> _userManager;
-
+        //Create variable for connection to DB
         public GymOwnerController(AWSGymWebsiteContext context, UserManager<AWSGymWebsiteUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
@@ -113,31 +114,42 @@ namespace AWSGymWebsite.Controllers
                     Key = "img/"+imagefile.FileName,
                     CannedACL = S3CannedACL.PublicRead
                 };
-
                 await awsS3client.PutObjectAsync(uploadRequest);
 
-                //Create New SNS Topic
-                await snsClient.CreateTopicAsync(gymPage.GymName);
+                gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
+                gymPage.S3Key = imagefile.FileName;
+                var user = await _userManager.GetUserAsync(User);
+                var userId = user.Id;
+                gymPage.OwnerID = userId;
+
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(gymPage);
+                    await _context.SaveChangesAsync();
+
+                    //Create New SNS Topic
+                    var topicarn = await snsClient.CreateTopicAsync(gymPage.GymName);
+
+                    //Save SNS to GymID
+                    SNSTopic newtopic = new SNSTopic();
+                    newtopic.TopicARN = topicarn.TopicArn;
+                    int id = gymPage.ID;
+                    newtopic.GymID = id;
+
+                    _context.Add(newtopic);
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(gymPage);
+
             }
             catch (AmazonS3Exception ex)
             {
                 return BadRequest("Error: " + ex.Message);
             }
-            gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
-            gymPage.S3Key = imagefile.FileName;
-            var user = await _userManager.GetUserAsync(User);
-            var userId = user.Id;
-            gymPage.OwnerID = userId;
-
-
-
-            if (ModelState.IsValid)
-            {
-                _context.Add(gymPage);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(gymPage);
         }
 
         // GET: GymOwner/Edit/5
@@ -254,6 +266,7 @@ namespace AWSGymWebsite.Controllers
         {
             List<string> getKeys = getValues();
             var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+            var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
 
             if (_context.GymPage == null)
             {
@@ -278,7 +291,13 @@ namespace AWSGymWebsite.Controllers
             await awsS3client.DeleteObjectAsync(deleteRequest);
 
             //Delete SNS Topic
-            //await client.DeleteTopicAsync(topicArn);
+            List<SNSTopic> topicresult = await _context.snstopic.Where(gymPage => gymPage.GymID == id).ToListAsync();
+            SNSTopic topic = topicresult.First();
+            await snsClient.DeleteTopicAsync(topic.TopicARN);
+
+            //delete SNS in data
+            _context.snstopic.Remove(topic);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
