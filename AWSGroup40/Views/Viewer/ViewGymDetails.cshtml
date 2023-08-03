@@ -1,25 +1,82 @@
 ﻿
 @model AWSGymWebsite.Models.GymPage
-
+@using AWSGymWebsite.Models
+@using AWSGymWebsite.Data
 @{
-    ViewData["Title"] = "View Gym Details";
+    ViewData["Title"] = "View Gym Details"; public readonly AWSGymWebsiteContext _context;
+        List<SNSTopic> topicresult = _context.snstopic.Where(gymPage => gymPage.GymID == gymID).ToListAsync();
 }
 
-<h1>@Model.GymName</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
 
-<p>@Model.GymLocation</p>
-<p>Closing Time: @Model.ClosingTime</p>
-<p>Opening Time: @Model.OpeningTime</p>
-<p>Contact Number: @Model.ContactNumber</p>
-<p>Details: @Model.Details</p>
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: #fff;
+            margin: 0;
+        }
 
-<p>
-    @if (!string.IsNullOrEmpty(Model.viewer))
-    {
-    <span>You are already subscribed to this gym.</span>
-    }
-    else
-    {
-    <a asp-action="SubscribeGymOwner" asp-route-ownerId="@Model.OwnerID" asp-route-viewerEmail="@User.Identity.Name">Subscribe to this gym</a>
-    }
-</p>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .subscription-message {
+            color: green;
+            font-weight: bold;
+        }
+
+        .subscription-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+            .subscription-link:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+    <h1>@Model.GymName</h1>
+    <div class="container">
+        <p>@Model.GymLocation</p>
+        <p>Closing Time: @Model.ClosingTime</p>
+        <p>Opening Time: @Model.OpeningTime</p>
+        <p>Contact Number: @Model.ContactNumber</p>
+        <p>Details: @Model.Details</p>
+
+        @if (!string.IsNullOrEmpty(Model.viewer))
+        {
+        <p class="subscription-message">You are already subscribed to this gym.</p>
+        }
+        else
+        {
+        <a class="subscription-link" asp-action="SubscribeGymOwner" asp-route-ownerId="@Model.OwnerID" asp-route-viewerEmail="@User.Identity.Name">Subscribe to this gym</a>
+        }
+    </div>
+</body>
+</html>

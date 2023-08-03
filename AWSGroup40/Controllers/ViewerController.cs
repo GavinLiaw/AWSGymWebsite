@@ -6,22 +6,21 @@ using AWSGymWebsite.Models;
 using AWSGymWebsite.Areas.Identity.Data;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Microsoft.EntityFrameworkCore;
-using AWSGymWebsite.Data;
-using AWSGymWebsite.Models;
-using AWSGymWebsite.Areas.Identity.Data;
-
+using Amazon;
 
 namespace AWSGymWebsite.Controllers;
 
 public class ViewerController : Controller
 {
+    private readonly AWSGymWebsiteContext _context;
     private readonly AmazonSimpleNotificationServiceClient _snsClient;
     private readonly string _topicArn = "YOUR_TOPIC_ARN"; // need change the topic_arn
+    private string emailRequest;
 
-    public ViewerController(AmazonSimpleNotificationServiceClient snsClient)
+    public ViewerController(AmazonSimpleNotificationServiceClient snsClient, AWSGymWebsiteContext context)
     {
         _snsClient = snsClient;
+        _context = context;
     }
 
     public IActionResult Index()
@@ -29,58 +28,54 @@ public class ViewerController : Controller
         return View();
     }
 
+    private List<string> getValues()
+    {
+        List<string> values = new List<string>();
+
+        //1. link to appsettings.json and get back the values
+        var builder = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json");
+        IConfigurationRoot configure = builder.Build(); //build the json file
+
+        //2. read the info from json using configure instance
+        values.Add(configure["Values:Key1"]);
+        values.Add(configure["Values:Key2"]);
+        values.Add(configure["Values:Key3"]);
+
+        return values;
+    }
+
     [HttpPost]
-public IActionResult SubscribeGymOwner(string ownerId, string viewerEmail)
-{
-
-    // Send SNS subscription request to the gym owner
-    var subscriptionRequest = new SubscribeRequest
+    public async Task<IActionResult> SubscribeGymOwner(int ownerId, int gymID)
     {
-        TopicArn = _topicArn,
-        Protocol = "email",
-        Endpoint = "owner@email.com" // change to owner email
-    };
+        GymPage gymPage = await _context.GymPage.FindAsync(gymID); //if use await, post function async
+        List<string> getKeys = getValues();
 
-    try
-    {
-        var subscriptionResponse = _snsClient.Subscribe(subscriptionRequest);
-        // You can handle the subscriptionResponse if needed, e.g., check for SubscriptionArn.
-        if (!string.IsNullOrEmpty(subscriptionResponse.SubscriptionArn))
-        {
-            SendConfirmationEmail(viewerEmail);
-            NotifyGymOwner(ownerId, viewerEmail);
-            return RedirectToAction("SubscriptionSuccess", "Gym");
-        }
-        else
-        {
-            return RedirectToAction("SubscriptionError", "Gym");
-        }
+        var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+        List<SNSTopic> topicresult = await _context.snstopic.Where(gymPage => gymPage.GymID == gymID).ToListAsync();
+
+        SNSTopic topic = topicresult.First();
+
+        SubscribeRequest subscribeRequest = new SubscribeRequest(topic.TopicARN, "email", User.Identity.Name);
+
+        SubscribeResponse emailSubscribeResponse = await snsClient.SubscribeAsync(emailRequest);
+        var emailRequestId = emailSubscribeResponse.ResponseMetadata.RequestId;
+
+        return Index();
     }
-    catch (Exception ex)
+    private void SendConfirmationEmail(string email)
     {
 
-        return RedirectToAction("SubscriptionError", "Gym");
     }
-}
 
-private void SendConfirmationEmail(string email)
-{
-    // Implement your logic to send a confirmation email to the viewer.
-    // You can use libraries like SendGrid, MailKit, or other email services.
-    // For brevity, I'll leave the implementation details out.
-}
-
-private void NotifyGymOwner(string ownerId, string viewerEmail)
-{
-    // Implement your logic to notify the gym owner about the new subscriber.
-    // You can send an email, SMS, or use any other notification method based on your requirements.
-    // For brevity, I'll leave the implementation details out.
-}
-    
+    private void NotifyGymOwner(string ownerId, string viewerEmail)
+    {
+    }   
     public IActionResult ViewGymDetails(int id)
-{
+    {
     // Fetch the gym details using the 'id' parameter from the database
-    var gym = _dbContext.GymPages.FirstOrDefault(g => g.ID == id);
+    var gym = _context.GymPage.FirstOrDefault(g => g.ID == id);
 
     if (gym == null)
     {
@@ -90,4 +85,5 @@ private void NotifyGymOwner(string ownerId, string viewerEmail)
 
     // Pass the gym details to the view to display the information
     return View(gym);
+    }
 }
