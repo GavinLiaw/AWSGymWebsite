@@ -133,6 +133,7 @@ namespace AWSGymWebsite.Controllers
                      _context.Add(gymPage);
                     await _context.SaveChangesAsync();
 
+
                 try {
                     // Get Credential Key
                     List<string> getKeys = getValues();
