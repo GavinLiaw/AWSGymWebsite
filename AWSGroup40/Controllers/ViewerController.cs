@@ -32,14 +32,13 @@ public class ViewerController : Controller
     [HttpPost]
 public IActionResult SubscribeGymOwner(string ownerId, string viewerEmail)
 {
-    // ... Your existing code ...
 
     // Send SNS subscription request to the gym owner
     var subscriptionRequest = new SubscribeRequest
     {
         TopicArn = _topicArn,
         Protocol = "email",
-        Endpoint = "owner@email.com" // Replace with the actual owner's email address
+        Endpoint = "owner@email.com" // change to owner email
     };
 
     try
@@ -76,4 +75,19 @@ private void NotifyGymOwner(string ownerId, string viewerEmail)
     // Implement your logic to notify the gym owner about the new subscriber.
     // You can send an email, SMS, or use any other notification method based on your requirements.
     // For brevity, I'll leave the implementation details out.
+}
+    
+    public IActionResult ViewGymDetails(int id)
+{
+    // Fetch the gym details using the 'id' parameter from the database
+    var gym = _dbContext.GymPages.FirstOrDefault(g => g.ID == id);
+
+    if (gym == null)
+    {
+        // Handle the case where the gym with the specified ID is not found.
+        return NotFound();
+    }
+
+    // Pass the gym details to the view to display the information
+    return View(gym);
 }
