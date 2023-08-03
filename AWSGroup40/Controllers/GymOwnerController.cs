@@ -103,8 +103,7 @@ namespace AWSGymWebsite.Controllers
                 List<string> getKeys = getValues();
                 // Open S3
                 var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
-                //Open SNS
-               var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+               
 
                 //upload to S3
                 PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
@@ -115,12 +114,17 @@ namespace AWSGymWebsite.Controllers
                     CannedACL = S3CannedACL.PublicRead
                 };
                 await awsS3client.PutObjectAsync(uploadRequest);
+            }
+            catch (AmazonS3Exception ex)
+            {
+                return BadRequest("Error: " + ex.Message);
+            }
 
-                gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
-                gymPage.S3Key = imagefile.FileName;
-                var user = await _userManager.GetUserAsync(User);
-                var userId = user.Id;
-                gymPage.OwnerID = userId;
+            gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
+            gymPage.S3Key = imagefile.FileName;
+            var user = await _userManager.GetUserAsync(User);
+            var userId = user.Id;
+            gymPage.OwnerID = userId;
 
 
                 if (ModelState.IsValid)
@@ -128,8 +132,19 @@ namespace AWSGymWebsite.Controllers
                     _context.Add(gymPage);
                     await _context.SaveChangesAsync();
 
+                try {
+                    // Get Credential Key
+                    List<string> getKeys = getValues();
+                    //Open SNS
+                    var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
                     //Create New SNS Topic
-                    var topicarn = await snsClient.CreateTopicAsync(gymPage.GymName);
+
+                    string currentDate = DateTime.Now.ToString("yyyyMMdd");
+                    string currentTime = DateTime.Now.ToString("HHmmss");
+                    string newGymName = gymPage.GymName.Replace(" ", "_");
+                    string formattedGymName = $"{newGymName}_{currentDate}_{currentTime}";
+
+                    var topicarn = await snsClient.CreateTopicAsync(formattedGymName);
 
                     //Save SNS to GymID
                     SNSTopic newtopic = new SNSTopic();
@@ -138,18 +153,18 @@ namespace AWSGymWebsite.Controllers
                     newtopic.GymID = id;
 
                     _context.Add(newtopic);
-
                     await _context.SaveChangesAsync();
+                } catch (AmazonSimpleNotificationServiceException snsEx)
+                {
+                    return BadRequest("SNS Error: " + snsEx.Message);
+                }
                     return RedirectToAction(nameof(Index));
                 }
 
                 return View(gymPage);
 
-            }
-            catch (AmazonS3Exception ex)
-            {
-                return BadRequest("Error: " + ex.Message);
-            }
+            
+            
         }
 
         // GET: GymOwner/Edit/5
