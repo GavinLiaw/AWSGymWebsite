@@ -291,6 +291,7 @@ namespace AWSGymWebsite.Controllers
             await awsS3client.DeleteObjectAsync(deleteRequest);
 
             //Delete SNS Topic
+            //Find the Data based on GymID
             List<SNSTopic> topicresult = await _context.snstopic.Where(gymPage => gymPage.GymID == id).ToListAsync();
             SNSTopic topic = topicresult.First();
             await snsClient.DeleteTopicAsync(topic.TopicARN);
