@@ -97,21 +97,22 @@ namespace AWSGymWebsite.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile imagefile)
-        {
-            try
-            {
-                // Get Credential Key
+        {  
+            
+            // Get Credential Key
                 List<string> getKeys = getValues();
                 // Open S3
                 var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
-               
+            var newfilename = Guid.NewGuid() + "_" + imagefile.FileName;
 
+            try
+            {
                 //upload to S3
                 PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
                 {
                     InputStream = imagefile.OpenReadStream(),
                     BucketName = s3BucketName,
-                    Key = "img/"+imagefile.FileName,
+                    Key = "img/" + newfilename,
                     CannedACL = S3CannedACL.PublicRead
                 };
                 await awsS3client.PutObjectAsync(uploadRequest);
@@ -121,8 +122,8 @@ namespace AWSGymWebsite.Controllers
                 return BadRequest("Error: " + ex.Message);
             }
 
-            gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
-            gymPage.S3Key = imagefile.FileName;
+            gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + newfilename;
+            gymPage.S3Key = newfilename;
             var user = await _userManager.GetUserAsync(User);
             var userId = user.Id;
             gymPage.OwnerID = userId;
@@ -135,12 +136,10 @@ namespace AWSGymWebsite.Controllers
 
 
                 try {
-                    // Get Credential Key
-                    List<string> getKeys = getValues();
                     //Open SNS
-                    var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+                   var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+                    
                     //Create New SNS Topic
-
                     string currentDate = DateTime.Now.ToString("yyyyMMdd");
                     string currentTime = DateTime.Now.ToString("HHmmss");
                     string newGymName = gymPage.ID.ToString().Replace(" ", "_");
@@ -199,17 +198,19 @@ namespace AWSGymWebsite.Controllers
 
             if (imagefile != null)
             {
+                List<string> getKeys = getValues();
+                var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+
+                var newfilename = Guid.NewGuid() + "_" + imagefile.FileName;
                 try
                 {
-                    List<string> getKeys = getValues();
-                    var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
 
                     //upload to S3
                     PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
                     {
                         InputStream = imagefile.OpenReadStream(),
                         BucketName = s3BucketName,
-                        Key = "img/" + imagefile.FileName,
+                        Key = "img/" + newfilename,
                         CannedACL = S3CannedACL.PublicRead
                     };
 
@@ -229,8 +230,8 @@ namespace AWSGymWebsite.Controllers
                     return BadRequest("Error: " + ex.Message);
                 }
 
-                gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + imagefile.FileName;
-                gymPage.S3Key = imagefile.FileName;
+                gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + newfilename;
+                gymPage.S3Key = newfilename;
             }
 
             if (ModelState.IsValid)
