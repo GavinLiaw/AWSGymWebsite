@@ -1,10 +1,11 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @model AWSGymWebsite.Models.GymPage
-@using AWSGymWebsite.Models
-@using AWSGymWebsite.Data
+
 @{
-    ViewData["Title"] = "View Gym Details"; public readonly AWSGymWebsiteContext _context;
-        List<SNSTopic> topicresult = _context.snstopic.Where(gymPage => gymPage.GymID == gymID).ToListAsync();
+    ViewData["Title"] = "View Gym Details";
+    
+    var sub = HttpContextAccessor.HttpContext.Session.GetString("Subscribe");
 }
 
 <!DOCTYPE html>
@@ -69,7 +70,7 @@
         <p>Contact Number: @Model.ContactNumber</p>
         <p>Details: @Model.Details</p>
 
-        @if (!string.IsNullOrEmpty(Model.viewer))
+        @if (sub == "true")
         {
         <p class="subscription-message">You are already subscribed to this gym.</p>
         }

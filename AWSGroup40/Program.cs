@@ -23,6 +23,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 AWSSDKHandler.RegisterXRayForAllServices();
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddSession();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -39,7 +43,7 @@ app.UseXRay("XRay-GymWebsite");
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 
 app.UseAuthentication();// Check customer permission
 app.UseAuthorization();// Direct Login page
