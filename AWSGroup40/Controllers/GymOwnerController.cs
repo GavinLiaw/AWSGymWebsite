@@ -130,7 +130,7 @@ namespace AWSGymWebsite.Controllers
 
                 if (ModelState.IsValid)
                 {
-                   await _context.Add(gymPage);
+                     _context.Add(gymPage);
                     await _context.SaveChangesAsync();
 
                 try {
@@ -142,7 +142,7 @@ namespace AWSGymWebsite.Controllers
 
                     string currentDate = DateTime.Now.ToString("yyyyMMdd");
                     string currentTime = DateTime.Now.ToString("HHmmss");
-                    string newGymName = gymPage.ID.ToString.Replace(" ", "_");
+                    string newGymName = gymPage.ID.ToString().Replace(" ", "_");
                     string formattedGymName = $"{newGymName}_{currentDate}_{currentTime}";
 
                     var topicarn = await snsClient.CreateTopicAsync(formattedGymName);
