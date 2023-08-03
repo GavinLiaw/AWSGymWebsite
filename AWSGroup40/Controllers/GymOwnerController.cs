@@ -17,6 +17,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.SimpleNotificationService;
 using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
+using System.Drawing;
 
 namespace AWSGymWebsite.Controllers
 {
@@ -129,7 +130,7 @@ namespace AWSGymWebsite.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    _context.Add(gymPage);
+                   await _context.Add(gymPage);
                     await _context.SaveChangesAsync();
 
                 try {
@@ -141,7 +142,7 @@ namespace AWSGymWebsite.Controllers
 
                     string currentDate = DateTime.Now.ToString("yyyyMMdd");
                     string currentTime = DateTime.Now.ToString("HHmmss");
-                    string newGymName = gymPage.GymName.Replace(" ", "_");
+                    string newGymName = gymPage.ID.ToString.Replace(" ", "_");
                     string formattedGymName = $"{newGymName}_{currentDate}_{currentTime}";
 
                     var topicarn = await snsClient.CreateTopicAsync(formattedGymName);
