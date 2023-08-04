@@ -5,12 +5,18 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table" id="gymOwner">
+<div class="container mx-auto pb-5">
+
+<div class="">
+    <!-- 左寄せのコンテナ -->
+    <h1>Index</h1>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+</div>
+
+<table class="table " id="gymOwner">
     <thead>
         <tr>
             <th>
@@ -55,7 +61,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td class="text-truncate">
                 @Html.DisplayFor(modelItem => item.OwnerID)
             </td>
             <td>
@@ -100,9 +106,14 @@
 }
     </tbody>
 </table>
+</div>
 
 <script>
     $(document).ready(function () {
         $('#gymOwner').DataTable();
     });
 </script>
+
+
+
+

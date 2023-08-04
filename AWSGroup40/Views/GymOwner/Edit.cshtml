@@ -5,12 +5,14 @@
     ViewData["Title"] = "Edit";
 }
 
+
+<div class="container mx-auto pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
 <h1>Edit</h1>
 
 <h4>GymPage</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
@@ -40,9 +42,16 @@
                 <input asp-for="ContactNumber" class="form-control" />
                 <span asp-validation-for="ContactNumber" class="text-danger"></span>
             </div>
+            <!--
             <div class="form-group">
                 <label asp-for="Details" class="control-label"></label>
-                <input asp-for="Details" class="form-control" />
+                <input asp-for="Details"  class="form-control" />
+                <span asp-validation-for="Details" class="text-danger"></span>
+            </div>
+            -->
+            <div class="form-group">
+                <label asp-for="Details" class="control-label"></label>
+                <textarea asp-for="Details" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Details" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -67,5 +76,6 @@
 
 <div>
     <a asp-action="Index">Back to List</a>
+</div>
 </div>
 
