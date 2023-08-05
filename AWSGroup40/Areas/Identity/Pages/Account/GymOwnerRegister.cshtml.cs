@@ -149,6 +149,7 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
                     Userlname = Input.Userlname,
                     BusinessSSM = Input.BusinessSSM,
                     BusinessEmail= Input.BusinessEmail,
+                    EmailConfirmed = true,
                     role = "GymOwner"
                 };
 

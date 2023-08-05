@@ -144,6 +144,7 @@ namespace AWSGymWebsite.Areas.Identity.Pages.Account
                     Userlname = Input.Userlname,
                     role= "Viewer",
                     RegDate = DateTime.Now,
+                    EmailConfirmed = true
                 };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
