@@ -47,7 +47,6 @@ namespace AWSGymWebsite.Controllers
                             .AddJsonFile("appsettings.json");
             IConfigurationRoot configure = builder.Build(); //build the json file
 
-            //2. read the info from json using configure instance
             values.Add(configure["Values:Key1"]);
             values.Add(configure["Values:Key2"]);
             values.Add(configure["Values:Key3"]);
