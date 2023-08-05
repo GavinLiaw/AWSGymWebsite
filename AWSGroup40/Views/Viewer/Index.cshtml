@@ -1,6 +1,98 @@
-﻿@model AWSGymWebsite.Models.GymPage
+﻿@using AWSGymWebsite.Models;
+@model List<AWSGymWebsite.Models.GymPage>
 
 @{
     ViewData["Title"] = "View Gym Details";
+    CloudFront cd = new CloudFront();
 }
+
+<style>
+
+    .dataTables_wrapper.dataTables_length{
+        width:20%;
+    }
+    .dataTables_wrapper.dataTables_filter{
+        width:80%;
+    }
+
+    .dataTables_wrapper input {
+        width: 560px;
+    }
+
+    .tableborder table {
+        height: 160px;
+        box-shadow: 4px 2px 2px 4px rebeccapurple;
+        border-radius: 16px;
+        border-spacing:10px 20px!important;
+        border-collapse:separate!important;
+    }
+    .tableinside table{
+        border-spacing: 0px !important;
+        border-collapse: collapse !important;
+    }
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var table = $('#gympagelist').DataTable();
+    });
+</script>
+
+<div style="width:100%;height:fit-content; min-height:3000px;">
+    <div class="" style="padding:10px 10px 10px 240px;width:90%;">
+            <table id="gympagelist" class="tableborder" width="100%" style="border-spacing:10px 20px!important; border-collapse:separate!important;">
+            <thead>
+                <tr style="display:none;">
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+                <tr style="">
+                    <td>
+                            <table style="width:100%;border-spacing: 0px !important;border-collapse: collapse !important;" class="tableinside">
+                            <colgroup>
+                                <col style="max-width:40%;" />
+                                <col style="max-width:60%;" />
+
+                            </colgroup>
+
+                                <tbody style="vertical-align:top;" class="tableinside">
+                                <tr>
+                                    <td rowspan="2" 
+                                        style="padding:0px;background-image:url(@cd.cloudfront/@item.S3Key); width:40%;height:240px;background-size: cover;background-repeat:no-repeat">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                            <a asp-action="ViewGymDetails" asp-route-Gymid="@item.ID" class="nav-link"
+                                            style="font-weight:bold;color:mediumpurple;font-size:28px;">
+                                                @item.GymName
+                                                </a>
+                                        <br>
+                                            <span style="font-weight:bold;font-size:18px;">
+                                                @item.GymLocation
+                                        </span>
+                                        <br>
+                                    </td>
+
+                                    <td style="text-align:right;padding:10px 20px 0px 0px">
+                                            <span style="font-weight:bold;font-size:18px;">
+                                                @item.ContactNumber
+                                        </span>
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
 

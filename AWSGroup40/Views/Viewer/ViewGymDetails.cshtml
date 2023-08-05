@@ -4,8 +4,8 @@
 
 @{
     ViewData["Title"] = "View Gym Details";
-    
-    var sub = HttpContextAccessor.HttpContext.Session.GetString("Subscribe");
+
+    var sub = ViewData["Subscribe"].ToString();
 }
 
 <!DOCTYPE html>
@@ -70,13 +70,17 @@
         <p>Contact Number: @Model.ContactNumber</p>
         <p>Details: @Model.Details</p>
 
-        @if (sub == "true")
+        @if (sub.Equals("true"))
         {
         <p class="subscription-message">You are already subscribed to this gym.</p>
         }
         else
         {
-        <a class="subscription-link" asp-action="SubscribeGymOwner" asp-route-ownerId="@Model.OwnerID" asp-route-viewerEmail="@User.Identity.Name">Subscribe to this gym</a>
+            <form asp-action="Subscribe" asp-route-ID="@Model.ID">
+                <button class="subscription-link" type="submit">
+                    Subscribe to this gym
+                </button>
+            </form>
         }
     </div>
 </body>

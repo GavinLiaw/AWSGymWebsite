@@ -35,30 +35,6 @@ namespace AWSGymWebsite.Controllers
             _snsClient = new AmazonSimpleNotificationServiceClient(awsAccessKeyId, awsSecretAccessKey, RegionEndpoint.USEast1);
         }
 
-        private async Task<GymPage> GetGymPageFromDatabase()
-        {
-            try
-            {
-                // Replace the logic here with how you want to retrieve the GymPage from the database
-                // For example, you might want to retrieve a specific GymPage based on some criteria.
-
-                // For demonstration purposes, let's fetch the first GymPage from the database:
-                List<GymPage> gymPage = await _context.GymPage.ToListAsync();
-
-                return gymPage;
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that might occur during database retrieval
-                // For example, log the exception or return an error message to the user.
-                // You might want to use a logger like Serilog, NLog, or log the exception to the database.
-
-                // For simplicity, we will just return null in case of an error.
-                // In a real application, you should handle the exception more gracefully.
-                return null;
-            }
-        }
-
         public async Task<IActionResult> Index() //viewer can view all the gym 
         {
             List<GymPage> gymPage = await _context.GymPage.ToListAsync();
@@ -84,18 +60,18 @@ namespace AWSGymWebsite.Controllers
             return values;
         }
 
-        public Task<IActionResult> SubscribeGymOwner(int ownerId, int gymID)
-        {
-            return SubscribeGymOwner(ownerId, gymID, _context);
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> SubscribeGymOwner(int OwnerID, int ID, AWSGymWebsiteContext _context)
+        [HttpPost , ActionName("Subscribe")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubscribeGymOwner(int ID)
         {
 
-            GymPage gymPage = await _context.GymPage.FindAsync(OwnerID); //if use await, post function async
+            //Get Gym Detail based on ID
+            var gymPage = await _context.GymPage.FindAsync(ID); //if use await, post function async
 
+            await _context.SaveChangesAsync();
             List<string> getKeys = getValues();
+            var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
 
             //Find Topic based on GymID
             List<SNSTopic> topicresult = await _context.snstopic.Where(gymPage => gymPage.GymID == ID).ToListAsync();
@@ -103,29 +79,26 @@ namespace AWSGymWebsite.Controllers
 
             //Subscribe to Topic
             SubscribeRequest subscribeRequest = new SubscribeRequest(topic.TopicARN, "email", User.Identity.Name);
-            SubscribeResponse emailSubscribeResponse = await _snsClient.SubscribeAsync(subscribeRequest);
+            SubscribeResponse emailSubscribeResponse = await snsClient.SubscribeAsync(subscribeRequest);
             var emailRequestId = emailSubscribeResponse.ResponseMetadata.RequestId;
 
             //Add User to Subscriber Data
             var user = await _userManager.FindByEmailAsync(User.Identity.Name);
             Subscriber newsub = new Subscriber();
             newsub.SubDate = DateTime.Now;
-            newsub.UserID = int.Parse(user.Id);
-            newsub.ID = ID;
+            newsub.UserID = user.Id;
+            newsub.SubARN = emailSubscribeResponse.SubscriptionArn;
+            newsub.GymID = ID;
 
             _context.subscriber.Add(newsub);
             await _context.SaveChangesAsync();
 
             // Redirect to a success page or another appropriate action
-            return RedirectToAction("Index");
+            return await ViewGymDetails(ID);
         }
 
-        private void SendConfirmationEmail(string email)
-        {
-            // Implement email sending logic here
-        }
 
-        private async Task NotifyGymOwner(string ownerId, string viewerEmail)
+        private async Task NotifyGymOwner(string ID, string viewerEmail)
         {
             List<string> getKeys = getValues();
             var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
@@ -167,7 +140,18 @@ namespace AWSGymWebsite.Controllers
             var isSubscribed = HttpContext.Session.GetString("Subscribe") == "true";
 
             // Pass the gym details and subscription status to the view
-            ViewBag.IsSubscribed = isSubscribed;
+            var user = await _userManager.FindByEmailAsync(User.Identity.Name);
+            List<Subscriber> subresult = await _context.subscriber.Where(gym => gym.GymID == Gymid && gym.UserID == user.Id).ToListAsync();
+    
+
+            if (subresult.Count == 1) { 
+                ViewData["Subscribe"] = "true";
+            }
+            else
+            {
+                ViewData["Subscribe"] = "false";
+            }
+        
             return View(gym);
         }
     }

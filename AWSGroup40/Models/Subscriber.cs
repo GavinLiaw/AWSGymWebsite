@@ -10,9 +10,11 @@ namespace AWSGymWebsite.Models
         [Key]//primary key below
         public int id { get; set; }
 
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 
         public int GymID { get; set; }
+
+        public string SubARN { get; set; }
 
         public DateTime SubDate { get; set; }
 
