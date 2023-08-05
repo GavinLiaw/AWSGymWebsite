@@ -25,18 +25,18 @@ namespace AWSGroup40.Controllers
 
         public IActionResult Index()
         {
-            if (_signInManager.IsSignedIn(User)) {
-                if (User.IsInRole("GymOwner"))
-                {
-                    return RedirectToAction("Index", "GymOwner");
-                }
-                else {
-                    return RedirectToAction("Index", "Viewer");
-                }
-            }
-            else { 
+           // if (_signInManager.IsSignedIn(User)) {
+          //      if (User.IsInRole("GymOwner"))
+         //       {
+           //         return RedirectToAction("Index", "GymOwner");
+        //        }
+        //        else {
+       //             return RedirectToAction("Index", "Viewer");
+       //         }
+       //     }
+       //     else { 
                 return View();
-            }
+       //     }
             
         }
         public IActionResult goregister()
