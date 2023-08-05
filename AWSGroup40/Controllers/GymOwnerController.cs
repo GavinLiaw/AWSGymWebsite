@@ -197,51 +197,51 @@ namespace AWSGymWebsite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile imagefile)
         {
-            if (id != gymPage.ID)
-            {
-                return NotFound();
-            }
-
-            if (imagefile != null)
-            {
-                List<string> getKeys = getValues();
-                var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
-
-                var newfilename = Guid.NewGuid() + "_" + imagefile.FileName;
-                try
-                {
-
-                    //upload to S3
-                    PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
-                    {
-                        InputStream = imagefile.OpenReadStream(),
-                        BucketName = s3BucketName,
-                        Key = "img/" + newfilename,
-                        CannedACL = S3CannedACL.PublicRead
-                    };
-
-                    await awsS3client.PutObjectAsync(uploadRequest);
-
-                    //create a delete request 
-                    DeleteObjectRequest deleteRequest = new DeleteObjectRequest
-                    {
-                        BucketName = s3BucketName,
-                        //Old Image File Name
-                        Key = "img/" + gymPage.S3Key
-                    };
-                    await awsS3client.DeleteObjectAsync(deleteRequest);
-                }
-                catch (AmazonS3Exception ex)
-                {
-                    return BadRequest("Error: " + ex.Message);
-                }
-
-                gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + newfilename;
-                gymPage.S3Key = newfilename;
-            }
-
             if (ModelState.IsValid)
             {
+                if (id != gymPage.ID)
+                {
+                    return NotFound();
+                }
+
+                if (imagefile != null)
+                {
+                    List<string> getKeys = getValues();
+                    var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+
+                    var newfilename = Guid.NewGuid() + "_" + imagefile.FileName;
+                    try
+                    {
+
+                        //upload to S3
+                        PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
+                        {
+                            InputStream = imagefile.OpenReadStream(),
+                            BucketName = s3BucketName,
+                            Key = "img/" + newfilename,
+                            CannedACL = S3CannedACL.PublicRead
+                        };
+
+                        await awsS3client.PutObjectAsync(uploadRequest);
+
+                        //create a delete request 
+                        DeleteObjectRequest deleteRequest = new DeleteObjectRequest
+                        {
+                            BucketName = s3BucketName,
+                            //Old Image File Name
+                            Key = "img/" + gymPage.S3Key
+                        };
+                        await awsS3client.DeleteObjectAsync(deleteRequest);
+                    }
+                    catch (AmazonS3Exception ex)
+                    {
+                        return BadRequest("Error: " + ex.Message);
+                    }
+
+                    gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + newfilename;
+                    gymPage.S3Key = newfilename;
+                }
+
                 try
                 {
                     _context.Update(gymPage);
