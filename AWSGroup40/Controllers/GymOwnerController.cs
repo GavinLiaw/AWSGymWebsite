@@ -98,38 +98,45 @@ namespace AWSGymWebsite.Controllers
         public async Task<IActionResult> Create([Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile imagefile)
         {  
             
-            // Get Credential Key
+            if (ModelState.IsValid)
+            {
+
+                if (imagefile == null || imagefile.Length <= 0)
+                {
+                    ModelState.AddModelError("imagefile", "Please select an image file.");
+                    return View(gymPage);
+                }
+
+                // Get Credential Key
                 List<string> getKeys = getValues();
                 // Open S3
                 var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
-            var newfilename = Guid.NewGuid() + "_" + imagefile.FileName;
+                var newfilename = Guid.NewGuid() + "_" + imagefile.FileName;
 
-            try
-            {
-                //upload to S3
-                PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
+                try
                 {
-                    InputStream = imagefile.OpenReadStream(),
-                    BucketName = s3BucketName,
-                    Key = "img/" + newfilename,
-                    CannedACL = S3CannedACL.PublicRead
-                };
-                await awsS3client.PutObjectAsync(uploadRequest);
-            }
-            catch (AmazonS3Exception ex)
-            {
-                return BadRequest("Error: " + ex.Message);
-            }
-
-            gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + newfilename;
-            gymPage.S3Key = newfilename;
-            var user = await _userManager.GetUserAsync(User);
-            var userId = user.Id;
-            gymPage.OwnerID = userId;
-
-
-                if (ModelState.IsValid)
+                    //upload to S3
+                    PutObjectRequest uploadRequest = new PutObjectRequest //generate the request
+                    {
+                        InputStream = imagefile.OpenReadStream(),
+                        BucketName = s3BucketName,
+                        Key = "img/" + newfilename,
+                        CannedACL = S3CannedACL.PublicRead
+                    };
+                    await awsS3client.PutObjectAsync(uploadRequest);
+                }
+                catch (AmazonS3Exception ex)
                 {
+                    return BadRequest("Error: " + ex.Message);
+                }
+
+                gymPage.ImgURL = "https://" + s3BucketName + ".s3.amazonaws.com/img/" + newfilename;
+                gymPage.S3Key = newfilename;
+                var user = await _userManager.GetUserAsync(User);
+                var userId = user.Id;
+                gymPage.OwnerID = userId;
+
+
                      _context.Add(gymPage);
                     await _context.SaveChangesAsync();
 
@@ -159,9 +166,9 @@ namespace AWSGymWebsite.Controllers
                     return BadRequest("SNS Error: " + snsEx.Message);
                 }
                     return RedirectToAction(nameof(Index));
-                }
+            }
 
-                return View(gymPage);
+            return View(gymPage);
 
             
             

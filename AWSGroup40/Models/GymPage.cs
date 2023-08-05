@@ -32,6 +32,8 @@ namespace AWSGymWebsite.Models
 
         [Required(ErrorMessage = "Contact Number Time is Required")]
         [Display(Name = "Contact Number")]
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number")]
         public String ContactNumber { get; set; }
 
         [Required(ErrorMessage = "Gym Details is Required")]
