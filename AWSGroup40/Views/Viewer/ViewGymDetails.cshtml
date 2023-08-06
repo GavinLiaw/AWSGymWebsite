@@ -69,8 +69,8 @@
     <div class="container">
         <img src="@Model.ImgURL" alt="@Model.GymName" style="max-width: 100%; height:auto;"/>
         <p>@Model.GymLocation</p>
-        <p>Closing Time: @Model.ClosingTime</p>
-        <p>Opening Time: @Model.OpeningTime</p>
+        <p>Closing Time: @Model.ClosingTime.ToString("hh:mm tt")</p>
+        <p>Opening Time: @Model.OpeningTime.ToString("hh:mm tt")</p>
         <p>Contact Number: @Model.ContactNumber</p>
         <p>Details: @Model.Details</p>
 
@@ -80,7 +80,7 @@
         }
         else
         {
-            <form asp-action="Subscribe" asp-route-ID="@Model.ID">
+            <form asp-action="SubscribeGymOwner" asp-route-ID="@Model.ID">
                 <button class="subscription-link" type="submit">
                     Subscribe to this gym
                 </button>
