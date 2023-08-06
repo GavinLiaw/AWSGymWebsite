@@ -61,7 +61,7 @@ namespace AWSGymWebsite.Controllers
         }
 
 
-        [HttpPost , ActionName("Subscribe")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubscribeGymOwner(int ID)
         {
@@ -94,7 +94,8 @@ namespace AWSGymWebsite.Controllers
             await _context.SaveChangesAsync();
 
             // Redirect to a success page or another appropriate action
-            return await ViewGymDetails(ID);
+            ViewData["Subscribe"] = "true";
+            return Redirect("/Viewer/ViewGymDetails?Gymid="+ID);
         }
 
 
@@ -144,7 +145,7 @@ namespace AWSGymWebsite.Controllers
             List<Subscriber> subresult = await _context.subscriber.Where(gym => gym.GymID == Gymid && gym.UserID == user.Id).ToListAsync();
     
 
-            if (subresult.Count == 1) { 
+            if (subresult.Count >= 1) { 
                 ViewData["Subscribe"] = "true";
             }
             else
