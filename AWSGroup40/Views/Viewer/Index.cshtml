@@ -52,19 +52,16 @@
                 <tr style="">
                     <td>
                             <table style="width:100%;border-spacing: 0px !important;border-collapse: collapse !important;" class="tableinside">
-                            <colgroup>
-                                <col style="max-width:40%;" />
-                                <col style="max-width:60%;" />
-
-                            </colgroup>
-
-                                <tbody style="vertical-align:top;" class="tableinside">
-                                <tr>
-                                    <td rowspan="2" 
-                                        style="padding:0px;background-image:url(@cd.cloudfront/@item.S3Key); width:40%;height:240px;background-size: cover;background-repeat:no-repeat">
-                                    </td>
-                                </tr>
-                                <tr>
+                    <colgroup>
+                        <col style="max-width:40%;" />
+                        <col style="max-width:60%;" />
+                    </colgroup>
+                            <tbody style="vertical-align:top;" class="tableinside">
+                    <tr>
+                            <td rowspan="2" style="padding:0px;">
+                            <!-- Main gym image -->
+                                <img src="@cd.cloudfront/@item.S3Key" alt="@item.GymName" style="width:70%; height:240px; object-fit: cover;">
+                            </td>
                                     <td>
                                             <a asp-action="ViewGymDetails" asp-route-Gymid="@item.ID" class="nav-link"
                                             style="font-weight:bold;color:mediumpurple;font-size:28px;">

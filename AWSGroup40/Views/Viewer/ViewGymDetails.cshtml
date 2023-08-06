@@ -63,7 +63,10 @@
 </head>
 <body>
     <h1>@Model.GymName</h1>
+
+    <!-- gym details content -->
     <div class="container">
+        <img src="@Model.ImgURL" alt="@Model.GymName" style="max-width: 100%; height:auto;"/>
         <p>@Model.GymLocation</p>
         <p>Closing Time: @Model.ClosingTime</p>
         <p>Opening Time: @Model.OpeningTime</p>
