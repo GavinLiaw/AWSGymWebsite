@@ -18,6 +18,7 @@ using Amazon.S3.Model;
 using Amazon.SimpleNotificationService;
 using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using System.Drawing;
+using Amazon.SimpleNotificationService.Model;
 
 namespace AWSGymWebsite.Controllers
 {
@@ -170,8 +171,6 @@ namespace AWSGymWebsite.Controllers
 
             return View(gymPage);
 
-            
-            
         }
 
         // GET: GymOwner/Edit/5
@@ -283,6 +282,14 @@ namespace AWSGymWebsite.Controllers
             return View(gymPage);
         }
 
+
+        [HttpGet]
+        public IActionResult SendMessageToSubscribers(int id)
+        {
+            ViewData["GymId"] = id;
+            return View();
+        }
+
         // POST: GymOwner/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -330,6 +337,48 @@ namespace AWSGymWebsite.Controllers
         private bool GymPageExists(int id)
         {
           return (_context.GymPage?.Any(e => e.ID == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> SendMessageToSubscribers(int id, string message)
+        {
+            // Get Gym Detail based on ID
+            var gymPage = await _context.GymPage.FindAsync(id);
+
+            if (gymPage == null)
+            {
+                // Gym page not found, handle the error
+                return NotFound();
+            }
+
+            List<string> getKeys = getValues();
+            var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+
+            // Find Topic based on GymID
+            List<SNSTopic> topicResult = await _context.snstopic.Where(gymPage => gymPage.GymID == id).ToListAsync();
+            SNSTopic topic = topicResult.First();
+
+            // Send message to subscribers
+            PublishRequest publishRequest = new PublishRequest
+            {
+                TopicArn = topic.TopicARN,
+                Message = message
+            };
+
+            try
+            {
+                PublishResponse publishResponse = await snsClient.PublishAsync(publishRequest);
+
+                // Redirect to a success page or another appropriate action
+                ViewData["MessageSent"] = true;
+                return RedirectToAction("ViewGymDetails", new { id });
+            }
+            catch (AmazonSimpleNotificationServiceException ex)
+            {
+                // Handle the exception, return error message, or redirect to an error page
+                // Example:
+                ViewData["ErrorMessage"] = "Error sending message: " + ex.Message;
+                return View();
+            }
         }
     }
 }

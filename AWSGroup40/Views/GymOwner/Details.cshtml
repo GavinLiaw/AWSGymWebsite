@@ -5,6 +5,7 @@
     ViewData["Title"] = "Details";
 }
 
+
 <h1>Details</h1>
 <div>
     <h4>GymPage</h4>
@@ -65,7 +66,7 @@
             @{
                 var cd = new CloudFront();
             }
-            <img src="@cd.cloudfront/@Model.S3Key" width="300px" />
+            <img src="@cd.cloudfront/@Model.S3Key" width="300" />
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.viewer)
@@ -75,8 +76,18 @@
         </dd>
     </dl>
 </div>
-<div>
 
+<div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<h2>Send Message to Subscribers</h2>
+
+<form asp-action="SendMessageToSubscribers" asp-route-id="@ViewData["GymId"]">
+    <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea class="form-control" id="message" name="message" rows="4"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Message</button>
+</form>
