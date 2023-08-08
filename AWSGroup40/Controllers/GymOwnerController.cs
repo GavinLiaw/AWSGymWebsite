@@ -54,7 +54,7 @@ namespace AWSGymWebsite.Controllers
 
             return values;
         }
-        
+
 
         // GET: GymOwner
         public async Task<IActionResult> Index()
@@ -62,7 +62,7 @@ namespace AWSGymWebsite.Controllers
             var user = await _userManager.GetUserAsync(User);
             var userId = user.Id;
 
-            return _context.GymPage != null ? 
+            return _context.GymPage != null ?
                           View(await _context.GymPage.Where(g => g.OwnerID == userId).ToListAsync()) :
                           Problem("Entity set 'AWSGymWebsiteContext.GymPage'  is null.");
         }
@@ -77,12 +77,34 @@ namespace AWSGymWebsite.Controllers
 
             var gymPage = await _context.GymPage
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (gymPage == null)
             {
                 return NotFound();
             }
 
-            return View(gymPage);
+            // Get the number of subscribers for this gym page
+            int subscriberCount = _context.subscriber
+                                        .Count(s => s.id == id);
+
+            // Create a view model and populate its properties
+            var viewModel = new GymPage
+            {
+                ID = gymPage.ID,
+                OwnerID = gymPage.OwnerID,
+                GymName = gymPage.GymName,
+                GymLocation = gymPage.GymLocation,
+                ClosingTime = gymPage.ClosingTime,
+                OpeningTime = gymPage.OpeningTime,
+                ContactNumber = gymPage.ContactNumber,
+                Details = gymPage.Details,
+                ImgURL = gymPage.ImgURL,    
+                S3Key =  gymPage?.S3Key,
+                viewer = subscriberCount
+            };
+
+            // Return the view with the view model
+            return View(viewModel);
         }
 
         // GET: GymOwner/Create
@@ -91,14 +113,15 @@ namespace AWSGymWebsite.Controllers
             return View();
         }
 
+
         // POST: GymOwner/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile imagefile)
-        {  
-            
+        {
+
             if (ModelState.IsValid)
             {
 
@@ -138,14 +161,15 @@ namespace AWSGymWebsite.Controllers
                 gymPage.OwnerID = userId;
 
 
-                     _context.Add(gymPage);
-                    await _context.SaveChangesAsync();
+                _context.Add(gymPage);
+                await _context.SaveChangesAsync();
 
 
-                try {
+                try
+                {
                     //Open SNS
-                   var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
-                    
+                    var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+
                     //Create New SNS Topic
                     string currentDate = DateTime.Now.ToString("yyyyMMdd");
                     string currentTime = DateTime.Now.ToString("HHmmss");
@@ -162,11 +186,12 @@ namespace AWSGymWebsite.Controllers
 
                     _context.Add(newtopic);
                     await _context.SaveChangesAsync();
-                } catch (AmazonSimpleNotificationServiceException snsEx)
+                }
+                catch (AmazonSimpleNotificationServiceException snsEx)
                 {
                     return BadRequest("SNS Error: " + snsEx.Message);
                 }
-                    return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 
             return View(gymPage);
@@ -282,63 +307,7 @@ namespace AWSGymWebsite.Controllers
             return View(gymPage);
         }
 
-
-        [HttpGet]
-        public IActionResult SendMessageToSubscribers(int id)
-        {
-            ViewData["GymId"] = id;
-            return View();
-        }
-
-        // POST: GymOwner/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            List<string> getKeys = getValues();
-            var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
-            var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
-
-            if (_context.GymPage == null)
-            {
-                return Problem("Entity set 'AWSGymWebsiteContext.GymPage'  is null.");
-            }
-            var gymPage = await _context.GymPage.FindAsync(id);
-            if (gymPage != null)
-            {
-                _context.GymPage.Remove(gymPage);
-            }
-            
-            await _context.SaveChangesAsync();
-
-            //Delete Image File
-            //create a delete request 
-            DeleteObjectRequest deleteRequest = new DeleteObjectRequest
-            {
-                BucketName = s3BucketName,
-                //Old Image File Name
-                Key = "img/" + gymPage.S3Key
-            };
-            await awsS3client.DeleteObjectAsync(deleteRequest);
-
-            //Delete SNS Topic
-            //Find the SNS topic based on GymID
-            List<SNSTopic> topicresult = await _context.snstopic.Where(gymPage => gymPage.GymID == id).ToListAsync();
-            SNSTopic topic = topicresult.First();
-            await snsClient.DeleteTopicAsync(topic.TopicARN);
-
-            //delete SNS in data
-            _context.snstopic.Remove(topic);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool GymPageExists(int id)
-        {
-          return (_context.GymPage?.Any(e => e.ID == id)).GetValueOrDefault();
-        }
-
+        //send message to subscriber//
         public async Task<IActionResult> SendMessageToSubscribers(int id, string message)
         {
             // Get Gym Detail based on ID
@@ -374,11 +343,65 @@ namespace AWSGymWebsite.Controllers
             }
             catch (AmazonSimpleNotificationServiceException ex)
             {
-                // Handle the exception, return error message, or redirect to an error page
-                // Example:
-                ViewData["ErrorMessage"] = "Error sending message: " + ex.Message;
-                return View();
+                TempData["ErrorMessage"] = "Error sending message to subscribers.";
+                return RedirectToAction("Details", new { id });
             }
         }
+
+        public IActionResult SendMessageToSubscribers(int id)
+        {
+            ViewData["GymId"] = id;
+            return View();
+        }
+
+        // POST: GymOwner/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            List<string> getKeys = getValues();
+            var awsS3client = new AmazonS3Client(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+            var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
+
+            if (_context.GymPage == null)
+            {
+                return Problem("Entity set 'AWSGymWebsiteContext.GymPage'  is null.");
+            }
+            var gymPage = await _context.GymPage.FindAsync(id);
+            if (gymPage != null)
+            {
+                _context.GymPage.Remove(gymPage);
+            }
+
+            await _context.SaveChangesAsync();
+
+            //Delete Image File
+            //create a delete request 
+            DeleteObjectRequest deleteRequest = new DeleteObjectRequest
+            {
+                BucketName = s3BucketName,
+                //Old Image File Name
+                Key = "img/" + gymPage.S3Key
+            };
+            await awsS3client.DeleteObjectAsync(deleteRequest);
+
+            //Delete SNS Topic
+            //Find the SNS topic based on GymID
+            List<SNSTopic> topicresult = await _context.snstopic.Where(gymPage => gymPage.GymID == id).ToListAsync();
+            SNSTopic topic = topicresult.First();
+            await snsClient.DeleteTopicAsync(topic.TopicARN);
+
+            //delete SNS in data
+            _context.snstopic.Remove(topic);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool GymPageExists(int id)
+        {
+            return (_context.GymPage?.Any(e => e.ID == id)).GetValueOrDefault();
+        }
+  
     }
 }

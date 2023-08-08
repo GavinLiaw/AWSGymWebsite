@@ -6,6 +6,7 @@
 }
 
 
+
 <h1>Details</h1>
 <div>
     <h4>GymPage</h4>
@@ -69,10 +70,10 @@
             <img src="@cd.cloudfront/@Model.S3Key" width="300" />
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.viewer)
+            <input asp-for="viewer" type="hidden" value="@Model.viewer" />
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.viewer)
+            @Model.viewer
         </dd>
     </dl>
 </div>
@@ -83,11 +84,10 @@
 </div>
 
 <h2>Send Message to Subscribers</h2>
-
-<form asp-action="SendMessageToSubscribers" asp-route-id="@ViewData["GymId"]">
+<form asp-action="SendMessageToSubscribers" asp-route-id="@ViewData["GymId"]" method="post">
     <div class="form-group">
         <label for="message">Message:</label>
         <textarea class="form-control" id="message" name="message" rows="4"></textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Send Message</button>
+    <button type="submit" class="btn btn-primary custom-button">Send Message</button>
 </form>
