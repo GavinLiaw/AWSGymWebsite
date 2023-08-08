@@ -73,7 +73,7 @@
             <input asp-for="viewer" type="hidden" value="@Model.viewer" />
         </dt>
         <dd class="col-sm-10">
-            @Model.viewer
+            <input asp-for="viewer" type="hidden" value="@Model.viewer" />
         </dd>
     </dl>
 </div>
@@ -84,10 +84,11 @@
 </div>
 
 <h2>Send Message to Subscribers</h2>
-<form asp-action="SendMessageToSubscribers" asp-route-id="@ViewData["GymId"]" method="post">
+<form asp-action="SendMessageToSubscribers" method="post">
     <div class="form-group">
         <label for="message">Message:</label>
         <textarea class="form-control" id="message" name="message" rows="4"></textarea>
     </div>
     <button type="submit" class="btn btn-primary custom-button">Send Message</button>
 </form>
+ 

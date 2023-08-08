@@ -77,34 +77,12 @@ namespace AWSGymWebsite.Controllers
 
             var gymPage = await _context.GymPage
                 .FirstOrDefaultAsync(m => m.ID == id);
-
             if (gymPage == null)
             {
                 return NotFound();
             }
 
-            // Get the number of subscribers for this gym page
-            int subscriberCount = _context.subscriber
-                                        .Count(s => s.id == id);
-
-            // Create a view model and populate its properties
-            var viewModel = new GymPage
-            {
-                ID = gymPage.ID,
-                OwnerID = gymPage.OwnerID,
-                GymName = gymPage.GymName,
-                GymLocation = gymPage.GymLocation,
-                ClosingTime = gymPage.ClosingTime,
-                OpeningTime = gymPage.OpeningTime,
-                ContactNumber = gymPage.ContactNumber,
-                Details = gymPage.Details,
-                ImgURL = gymPage.ImgURL,    
-                S3Key =  gymPage?.S3Key,
-                viewer = subscriberCount
-            };
-
-            // Return the view with the view model
-            return View(viewModel);
+            return View(gymPage);
         }
 
         // GET: GymOwner/Create
@@ -346,12 +324,6 @@ namespace AWSGymWebsite.Controllers
                 TempData["ErrorMessage"] = "Error sending message to subscribers.";
                 return RedirectToAction("Details", new { id });
             }
-        }
-
-        public IActionResult SendMessageToSubscribers(int id)
-        {
-            ViewData["GymId"] = id;
-            return View();
         }
 
         // POST: GymOwner/Delete/5
