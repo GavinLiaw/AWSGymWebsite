@@ -64,9 +64,9 @@
                     <label>Current Image</label>
                     <img src="@cd.cloudfront/@Model.S3Key" width="200px" height="200px" />
             }
-            <input type="hidden" asp-for="ImgURL" />
-            <input type="hidden" asp-for="S3Key" />
-            <input type="hidden" asp-for="viewer" />
+            <input type="hidden" asp-for="ImgURL"  value="@Model.ImgURL"/>
+            <input type="hidden" asp-for="S3Key" value ="@Model.S3Key" />
+            <input type="hidden" asp-for="viewer" value ="@Model.viewer" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

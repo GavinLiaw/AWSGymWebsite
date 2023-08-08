@@ -143,7 +143,9 @@ namespace AWSGymWebsite.Controllers
             // Pass the gym details and subscription status to the view
             var user = await _userManager.FindByEmailAsync(User.Identity.Name);
             List<Subscriber> subresult = await _context.subscriber.Where(gym => gym.GymID == Gymid && gym.UserID == user.Id).ToListAsync();
-    
+
+            gym.viewer = gym.viewer + 1;
+            await _context.SaveChangesAsync();
 
             if (subresult.Count >= 1) { 
                 ViewData["Subscribe"] = "true";

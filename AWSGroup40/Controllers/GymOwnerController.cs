@@ -200,10 +200,10 @@ namespace AWSGymWebsite.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile imagefile)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile? imagefile)
         {
             if (ModelState.IsValid)
-            {
+           {
                 if (id != gymPage.ID)
                 {
                     return NotFound();
@@ -264,8 +264,8 @@ namespace AWSGymWebsite.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            return View(gymPage);
+             }
+           return View(gymPage);
         }
 
         // GET: GymOwner/Delete/5
