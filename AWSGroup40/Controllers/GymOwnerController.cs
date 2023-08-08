@@ -37,6 +37,9 @@ namespace AWSGymWebsite.Controllers
 
         private const string s3BucketName = "group40aws";
 
+        [TempData]
+        public string StatusMessage { get; set; }
+
         //function extra: connection string to the AWS Account
         private List<string> getValues()
         {
@@ -81,7 +84,7 @@ namespace AWSGymWebsite.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["Status"] = "";
             return View(gymPage);
         }
 
@@ -101,7 +104,7 @@ namespace AWSGymWebsite.Controllers
         {
 
             if (ModelState.IsValid)
-            {
+          {
 
                 if (imagefile == null || imagefile.Length <= 0)
                 {
@@ -170,9 +173,9 @@ namespace AWSGymWebsite.Controllers
                     return BadRequest("SNS Error: " + snsEx.Message);
                 }
                 return RedirectToAction(nameof(Index));
-            }
+           }
 
-            return View(gymPage);
+          return View(gymPage);
 
         }
 
@@ -286,6 +289,7 @@ namespace AWSGymWebsite.Controllers
         }
 
         //send message to subscriber//
+        [HttpPost]
         public async Task<IActionResult> SendMessageToSubscribers(int id, string message)
         {
             // Get Gym Detail based on ID
@@ -316,13 +320,13 @@ namespace AWSGymWebsite.Controllers
                 PublishResponse publishResponse = await snsClient.PublishAsync(publishRequest);
 
                 // Redirect to a success page or another appropriate action
-                ViewData["MessageSent"] = true;
-                return RedirectToAction("ViewGymDetails", new { id });
+                ViewData["Status"] = "Successfully publish News to subscriber";
+                return View("Details",gymPage);
             }
             catch (AmazonSimpleNotificationServiceException ex)
             {
-                TempData["ErrorMessage"] = "Error sending message to subscribers.";
-                return RedirectToAction("Details", new { id });
+                ViewData["Status"] = "Error sending message to subscribers.";
+                return Redirect("/GymOwner/Details/" + id);
             }
         }
 
