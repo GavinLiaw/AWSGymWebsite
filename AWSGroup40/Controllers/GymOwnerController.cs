@@ -321,7 +321,7 @@ namespace AWSGymWebsite.Controllers
 
                 // Redirect to a success page or another appropriate action
                 ViewData["Status"] = "Successfully publish News to subscriber";
-                return Redirect("/GymOwner/Details/" + id);
+                return View("Details",gymPage);
             }
             catch (AmazonSimpleNotificationServiceException ex)
             {
