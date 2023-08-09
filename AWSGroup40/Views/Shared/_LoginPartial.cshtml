@@ -55,6 +55,12 @@
                             <a asp-controller="Viewer" asp-action="Index" class="nav-link" style="min-width:auto;width:fit-content;font-size:26px;">View Gym</a>
                         </td>
                         <td>
+
+                        </td>
+                        <td>
+                            <a asp-controller="Viewer" asp-action="ViewSubscribedGyms" class="nav-link" style="min-width:auto;width:fit-content;font-size:26px;">View Subscribed Gym</a>
+                        </td>
+                        <td>
                             <a id="manage" class="nav-link" asp-area="Identity" style="min-width:auto;width:fit-content"
                        asp-page="/Account/Manage/Index" title="Manage">Hello, @UserManager.GetUserName(User)!</a>
                         </td>

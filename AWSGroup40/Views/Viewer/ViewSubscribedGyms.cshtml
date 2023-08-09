@@ -1,0 +1,117 @@
+﻿@model List<AWSGymWebsite.Models.GymPage>
+@using AWSGymWebsite.Models;
+
+@{
+    ViewData["Title"] = "View Subscribed Gym";
+    CloudFront cd = new CloudFront();
+}
+
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+<style>
+
+    .dataTables_wrapper.dataTables_length{
+        width:20%;
+    }
+    .dataTables_wrapper.dataTables_filter{
+        width:80%;
+    }
+
+    .dataTables_wrapper input {
+        width: 560px;
+    }
+
+    .tableborder table {
+        height: 160px;
+        box-shadow: 4px 2px 2px 4px rebeccapurple;
+        border-radius: 16px;
+        border-spacing:10px 20px!important;
+        border-collapse:separate!important;
+    }
+    .tableinside table{
+        border-spacing: 0px !important;
+        border-collapse: collapse !important;
+    }
+    
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var table = $('#gympagelist').DataTable();
+    });
+</script>
+   <center><h1>Subscribed Gyms</h1></center>
+   <br />
+<div style="width:100%;height:fit-content; min-height:3000px;">
+    <div class="" style="padding:10px 10px 10px 240px;width:90%;">
+            <table id="gympagelist" class="tableborder" width="100%" style="border-spacing:10px 20px!important; border-collapse:separate!important;">
+            <thead>
+                <tr style="display:none;">
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+                <tr style="">
+                    <td>
+                            <table style="width:100%;border-spacing: 0px !important;border-collapse: collapse !important;" class="tableinside">
+                    <colgroup>
+                        <col style="width:40%;" />
+                        <col style="width:45%;" />
+                       <col style="width:15%;" />
+                    </colgroup>
+                            <tbody style="vertical-align:top;" class="tableinside">
+                    <tr>
+                            <td rowspan="2" style="padding:0px;">
+                            <!-- Main gym image -->
+                                <img src="@cd.cloudfront/@item.S3Key" alt="@item.GymName" style="width:100%; height:240px; object-fit: cover;">
+                            </td>
+                                    <td style="padding-left:15px;">
+                                            <a asp-action="ViewGymDetails" asp-route-Gymid="@item.ID" class="nav-link"
+                                            style="font-weight:bold;color:mediumpurple;font-size:28px;">
+                                                @item.GymName
+                                                </a>
+                                        <br>
+                                            <span style="font-weight:bold;font-size:18px;">
+                                                @item.GymLocation
+                                        </span>
+                                        <br>
+                                    </td>
+
+                                    <td style="text-align:right;padding:10px 20px 0px 0px">
+                                            <span style="font-weight:bold;font-size:18px;">
+                                                @item.ContactNumber
+                                        </span>
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+</head>
+<body>
+    @if (Model.Count == 0)
+    {
+        <p>You haven't subscribed to any gyms yet.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var subscriber in Model) 
+            {
+                <li>@subscriber.ID</li>
+            }
+        </ul>
+    }
+</body>
+</html>
