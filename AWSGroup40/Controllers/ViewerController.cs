@@ -95,11 +95,11 @@ namespace AWSGymWebsite.Controllers
 
             // Redirect to a success page or another appropriate action
             ViewData["Subscribe"] = "true";
-            return Redirect("/Viewer/ViewGymDetails?Gymid="+ID);
+            return Redirect("/Viewer/ViewGymDetails?Gymid=" + ID);
         }
 
 
-        private async Task NotifyGymOwner(string topicArn, string viewerEmail)
+        private async Task NotifyGymOwner(string ID, string viewerEmail)
         {
             List<string> getKeys = getValues();
             var snsClient = new AmazonSimpleNotificationServiceClient(getKeys[0], getKeys[1], getKeys[2], RegionEndpoint.USEast1);
@@ -107,11 +107,11 @@ namespace AWSGymWebsite.Controllers
             // Construct the notification message
             string message = $"New subscriber with email {viewerEmail}";
 
-            // Publish the message to the specified SNS topic
+            // Publish the message to the SNS topic
             PublishRequest publishRequest = new PublishRequest
             {
                 Message = message,
-                TopicArn = topicArn
+                TopicArn = "arn:aws:sns:us-east-1:YOUR_ACCOUNT_ID:YOUR_TOPIC_NAME"
             };
 
             try
@@ -132,28 +132,29 @@ namespace AWSGymWebsite.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             // Retrieve the list of subscribed gyms for the user
-  
+
 
             var subscriptions = await (from s in _context.subscriber
-                            join g in _context.GymPage on s.GymID equals g.ID
-                            where s.UserID == user.Id
-                            select new GymPage
-                            {
-                                ID = g.ID,
-                                OwnerID = g.OwnerID,
-                                GymName = g.GymName,
-                                GymLocation = g.GymLocation,
-                                ClosingTime = g.ClosingTime,   
-                                OpeningTime = g.OpeningTime,    
-                                ContactNumber = g.ContactNumber,
-                                Details = g.Details,
-                                ImgURL = g.ImgURL,  
-                                S3Key = g.S3Key,
-                                viewer = g.viewer
-                            }).ToListAsync();
+                                       join g in _context.GymPage on s.GymID equals g.ID
+                                       where s.UserID == user.Id
+                                       select new GymPage
+                                       {
+                                           ID = g.ID,
+                                           OwnerID = g.OwnerID,
+                                           GymName = g.GymName,
+                                           GymLocation = g.GymLocation,
+                                           ClosingTime = g.ClosingTime,
+                                           OpeningTime = g.OpeningTime,
+                                           ContactNumber = g.ContactNumber,
+                                           Details = g.Details,
+                                           ImgURL = g.ImgURL,
+                                           S3Key = g.S3Key,
+                                           viewer = g.viewer
+                                       }).ToListAsync();
 
             return View(subscriptions); // Pass the subscriptions to the view
-    }
+        }
+
 
         public async Task<IActionResult> ViewGymDetails(int Gymid)
         {
@@ -176,14 +177,15 @@ namespace AWSGymWebsite.Controllers
             gym.viewer = gym.viewer + 1;
             await _context.SaveChangesAsync();
 
-            if (subresult.Count >= 1) { 
+            if (subresult.Count >= 1)
+            {
                 ViewData["Subscribe"] = "true";
             }
             else
             {
                 ViewData["Subscribe"] = "false";
             }
-        
+
             return View(gym);
         }
     }

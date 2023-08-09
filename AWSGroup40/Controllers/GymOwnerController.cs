@@ -104,7 +104,7 @@ namespace AWSGymWebsite.Controllers
         {
 
             if (ModelState.IsValid)
-          {
+            {
 
                 if (imagefile == null || imagefile.Length <= 0)
                 {
@@ -173,9 +173,9 @@ namespace AWSGymWebsite.Controllers
                     return BadRequest("SNS Error: " + snsEx.Message);
                 }
                 return RedirectToAction(nameof(Index));
-           }
+            }
 
-          return View(gymPage);
+            return View(gymPage);
 
         }
 
@@ -203,7 +203,7 @@ namespace AWSGymWebsite.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("ID,OwnerID,GymName,GymLocation,ClosingTime,OpeningTime,ContactNumber,Details,ImgURL,S3Key,viewer")] GymPage gymPage, IFormFile? imagefile)
         {
             if (ModelState.IsValid)
-           {
+            {
                 if (id != gymPage.ID)
                 {
                     return NotFound();
@@ -264,8 +264,8 @@ namespace AWSGymWebsite.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-             }
-           return View(gymPage);
+            }
+            return View(gymPage);
         }
 
         // GET: GymOwner/Delete/5
@@ -321,7 +321,7 @@ namespace AWSGymWebsite.Controllers
 
                 // Redirect to a success page or another appropriate action
                 ViewData["Status"] = "Successfully publish News to subscriber";
-                return View("Details",gymPage);
+                return View("Details", gymPage);
             }
             catch (AmazonSimpleNotificationServiceException ex)
             {
@@ -378,6 +378,6 @@ namespace AWSGymWebsite.Controllers
         {
             return (_context.GymPage?.Any(e => e.ID == id)).GetValueOrDefault();
         }
-  
+
     }
 }
